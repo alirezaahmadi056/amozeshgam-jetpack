@@ -1,0 +1,14 @@
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chacha20 = "0.9.1"
+jni = "0.21.1"
+
+
+
+[lib]
+name = "rust"
+crate-type = ["cdylib"]

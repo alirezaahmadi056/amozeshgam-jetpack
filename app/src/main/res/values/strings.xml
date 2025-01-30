@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">amozeshgam</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_web">WebActivity</string>
+    <string name="title_activity_field">FieldActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_tour">TourActivity</string>
+    <string name="asset_statements" translatable="false">[{ \"include\": \"https://amozeshgam.com/.well-known/assetlinks.json\" }]</string>
+
+</resources>

@@ -1,0 +1,11 @@
+/home/barbossa/Documents/amozeshgam-jetpack/app/src/main/rust/target/debug/deps/libchacha20-026fb242f96b0f68.rmeta: /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/lib.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/legacy.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/xchacha.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/soft.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/avx2.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/sse2.rs
+
+/home/barbossa/Documents/amozeshgam-jetpack/app/src/main/rust/target/debug/deps/chacha20-026fb242f96b0f68.d: /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/lib.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/legacy.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/xchacha.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/soft.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/avx2.rs /home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/sse2.rs
+
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/lib.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/legacy.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/xchacha.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/soft.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/avx2.rs:
+/home/barbossa/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chacha20-0.9.1/src/backends/sse2.rs:

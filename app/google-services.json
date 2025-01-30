@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "32023637600",
+    "project_id": "amozeshgam-2860f",
+    "storage_bucket": "amozeshgam-2860f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32023637600:android:e71d2b2fad67cc37981d05",
+        "android_client_info": {
+          "package_name": "com.amozeshgam.amozeshgam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4-K3kf6PxL99fm3w31K0-2m7SgMNTynQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

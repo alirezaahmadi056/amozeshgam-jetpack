@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#000080</color>
+    <color name="borderColor">#C4C4C4</color>
+    <color name="buttonMore">#404040</color>
+    <color name="blueBorderStory">#0B0B78</color>
+    <color name="whiteBorderStory">#7F7FEC</color>
+    <color name="paymentTextColor">#134328</color>
+    <color name="paymentBackgroundColor">#87CBA3</color>
+    <color name="redColor">#ED2E2E</color>
+    <color name="black">#00000000</color>
+    <color name="textColor">#000000</color>
+    <color name="backgroundColor">#FFFFFFFF</color>
+</resources>

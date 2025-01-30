@@ -1,0 +1,118 @@
+{
+  ConstraintSets: {
+    start: {
+      loginBackground: {
+        top: [
+          'parent',
+          'top',
+          0
+        ],
+        start: [
+          'parent',
+          'start',
+          0
+        ],
+        end: [
+          'parent',
+          'end',
+          0
+        ],
+        bottom: [
+          'parent',
+          'bottom',
+          0
+        ],
+      },
+      amozeshgamLogo: {
+        width: 'parent',
+        height: 'spread',
+        top: [
+          'parent',
+          'top',
+          10
+        ],
+        start: [
+          'parent',
+          'start',
+          10
+        ],
+        end: [
+          'parent',
+          'end',
+          10
+        ],
+        bottom: [
+          'parent',
+          'bottom',
+          10
+        ]
+      }
+    },
+    end: {
+      loginBackground: {
+        top: [
+          'parent',
+          'top',
+          0
+        ],
+        start: [
+          'parent',
+          'start',
+          0
+        ],
+        end: [
+          'parent',
+          'end',
+          0
+        ],
+        bottom: [
+          'parent',
+          'bottom',
+          0
+        ],
+      },
+      amozeshgamLogo: {
+        width: 'parent',
+        height: 'spread',
+        top: [
+          'parent',
+          'top',
+          12
+        ],
+        start: [
+          'parent',
+          'start',
+          10
+        ],
+        end: [
+          'parent',
+          'end',
+          10
+        ],
+        bottom: [
+          'parent',
+          'bottom',
+          10
+        ],
+      }
+    }
+  },
+  Transitions: {
+    default: {
+      from: 'start',
+      to: 'end',
+      pathMotionArc: 'startVertical',
+      KeyFrames: {
+        KeyAttributes: [
+          {
+            target: 'amozeshgamLogo',
+            frames: [
+              0,
+              100
+            ]
+          }
+        ],
+      }
+    }
+  }
+}

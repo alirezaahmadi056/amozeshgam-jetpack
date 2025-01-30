@@ -1,0 +1,114 @@
+[versions]
+agp = "8.5.2"
+androidxGlanceGlanceAppwidget = "1.1.1"
+biometricKtx = "1.4.0-alpha02"
+biometric = "1.4.0-alpha02"
+coilCompose = "2.6.0"
+coilGif = "2.0.0-rc02"
+composeRatingbar = "2.1.1"
+composeShimmer = "1.3.1"
+constraintlayoutCompose = "1.1.0"
+converterGson = "2.9.0"
+datastorePreferencesCore = "1.1.2"
+datePicker = "0.0.6"
+firebaseBom = "33.8.0"
+hiltNavigationCompose = "1.2.0"
+kotlin = "2.0.0"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+credentials = "1.3.0"
+credentialsPlayServicesAuth = "1.3.0"
+leakcanaryAndroid = "2.14"
+legacySupportV4 = "1.0.0"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.0"
+composeBom = "2025.01.00"
+dagger = "2.51.1"
+lottieCompose = "5.2.0"
+media3Exoplayer = "1.5.1"
+navigationCompose = "2.8.5"
+pahoMqttAndroid = "3.6.4"
+retrofit = "2.9.0"
+ksp = "2.0.0-1.0.21"
+securityCrypto = "1.1.0-alpha06"
+talsecsecurityCommunity = "9.6.0"
+uiautomator = "2.3.0"
+gms = "4.4.2"
+benchmarkMacroJunit4 = "1.3.3"
+firebaseMessaging = "24.1.0"
+baselineprofile = "1.3.3"
+profileinstaller = "1.4.1"
+kdownloader = "1.0.4"
+uiAndroid = "1.7.6"
+appcompat = "1.7.0"
+material = "1.12.0"
+detekt = "1.23.7"
+googleid = "1.1.1"
+
+[libraries]
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-biometric-ktx = { module = "androidx.biometric:biometric-ktx", version.ref = "biometricKtx" }
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
+androidx-glance-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "androidxGlanceGlanceAppwidget" }
+androidx-glance-glance = { module = "androidx.glance:glance", version.ref = "androidxGlanceGlanceAppwidget" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Exoplayer" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
+compose-ratingbar = { module = "com.github.SmartToolFactory:Compose-RatingBar", version.ref = "composeRatingbar" }
+compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+date-picker = { module = "com.github.alirezaahmadi056:date-picker", version.ref = "datePicker" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiAndroid" }
+androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+kdownloader = { module = "com.github.varungulatii:Kdownloader", version.ref = "kdownloader" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+paho-mqtt-android = { module = "com.github.hannesa2:paho.mqtt.android", version.ref = "pahoMqttAndroid" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+talsecsecurity-community = { module = "com.aheaditec.talsec.security:TalsecSecurity-Community", version.ref = "talsecsecurityCommunity" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+daggerPlugin = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+orgJetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+androidTest = { id = "com.android.test", version.ref = "agp" }
+com-google-gms = { id = "com.google.gms.google-services", version.ref = "gms" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
+detektPlugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

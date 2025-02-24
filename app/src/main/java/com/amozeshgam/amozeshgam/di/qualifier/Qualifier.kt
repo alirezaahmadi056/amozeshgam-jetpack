@@ -10,3 +10,7 @@ annotation class DaneshjooyarApi
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DefaultDataSource
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class BlackHoleApi

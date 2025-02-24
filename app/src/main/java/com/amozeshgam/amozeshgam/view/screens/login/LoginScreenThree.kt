@@ -47,16 +47,18 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.R
+import com.amozeshgam.amozeshgam.handler.NavigationClusterHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
-import com.amozeshgam.amozeshgam.view.HomeActivity
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.login.LoginViewModel
 
 @OptIn(ExperimentalMotionApi::class)
 @Composable
-fun ViewLoginThree(viewModel: LoginViewModel = hiltViewModel()) {
+fun ViewLoginThree(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val name = remember {
         mutableStateOf("")
     }
@@ -226,17 +228,15 @@ fun ViewLoginThree(viewModel: LoginViewModel = hiltViewModel()) {
                     buttonIsLoading.value = false
                     errorDialogButtonIsLoading.value = false
                     when (it) {
-                        RemoteStateHandler.OK ->{
-                            context.startActivity(
-                                Intent(
-                                    context,
-                                    HomeActivity::class.java
-                                )
-                            )
-                            viewModel.finishActivity()
+                        RemoteStateHandler.OK -> {
+                            navController.navigate(NavigationClusterHandler.Home.route) {
+                                popUpTo(NavigationScreenHandler.LoginScreenThree.route) {
+                                    inclusive = true
+                                }
+                            }
                         }
 
-                        RemoteStateHandler.BADRESPONSE -> showErrorDialog.value = true
+                        RemoteStateHandler.BAD_RESPONSE -> showErrorDialog.value = true
                         RemoteStateHandler.ERROR -> showErrorDialog.value = true
                         else -> Unit
                     }

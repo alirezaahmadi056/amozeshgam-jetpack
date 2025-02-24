@@ -9,7 +9,7 @@ import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndUserId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseCart
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor() : ViewModel() {
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput

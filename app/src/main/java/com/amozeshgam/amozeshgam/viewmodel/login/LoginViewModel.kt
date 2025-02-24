@@ -2,17 +2,10 @@ package com.amozeshgam.amozeshgam.viewmodel.login
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.IntentFilter
-import android.provider.ContactsContract.Data
-import android.provider.Telephony
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Log
-import androidx.compose.runtime.key
-import androidx.compose.runtime.snapshots.SnapshotMutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.FocusRequester
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,30 +14,21 @@ import com.amozeshgam.amozeshgam.BuildConfig
 import com.amozeshgam.amozeshgam.broadcast.BroadCastSms
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
-import com.amozeshgam.amozeshgam.data.model.local.LoginActivityModel
+import com.amozeshgam.amozeshgam.data.model.local.LoginClusterModel
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestCheckCode
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestPhone
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestSetName
-import com.amozeshgam.amozeshgam.data.repository.LoginActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.LoginClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.SecurityHandler
 import com.amozeshgam.amozeshgam.handler.ValidatingStateHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.io.Serializable
-import java.math.BigInteger
-import java.security.Key
-import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
-import java.security.KeyStore.PrivateKeyEntry
-import java.security.PrivateKey
-import java.util.Calendar
 import javax.inject.Inject
-import javax.security.auth.x500.X500Principal
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -56,10 +40,10 @@ class LoginViewModel @Inject constructor(
     ViewModel() {
 
     @Inject
-    lateinit var repository: LoginActivityRepository
+    lateinit var repository: LoginClusterRepository
 
     @Inject
-    lateinit var model: LoginActivityModel
+    lateinit var model: LoginClusterModel
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
@@ -69,7 +53,8 @@ class LoginViewModel @Inject constructor(
 
     @Inject
     lateinit var deviceHandler: DeviceHandler
-    val receiver = BroadCastSms()
+    @Inject
+    lateinit var receiver: BroadCastSms
 
     private val _codeSending = MutableLiveData(RemoteStateHandler.WAITING)
     val codeSending: LiveData<RemoteStateHandler> = _codeSending
@@ -77,32 +62,22 @@ class LoginViewModel @Inject constructor(
     val codeIsValid: LiveData<Pair<ValidatingStateHandler, Boolean>> = _codeIsValid
     private val _saveUserName = MutableLiveData(RemoteStateHandler.WAITING)
     val saveUserName: LiveData<RemoteStateHandler> = _saveUserName
-    private val _finishActivity = MutableLiveData<Boolean>()
-    val finishActivity:LiveData<Boolean> = _finishActivity
 
     fun getTextCodeFocused(): Array<FocusRequester> {
         return model.focusArray
 
     }
 
-    fun startBrodCastReceiverAndGetCode(codes: SnapshotStateList<String>) {
-
-        context.registerReceiver(receiver, IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION))
-        viewModelScope.launch {
-            receiver.codes.collect {
-                if (it.size == 5){
-                    codes.addAll(it)
-                }
+    suspend fun getLoginCodeFromBroadCast(codes: SnapshotStateList<String>) {
+        receiver.codes.collect {
+            if (it.size == 5){
+                codes.addAll(it)
             }
         }
     }
 
     override fun onCleared() {
         context.unregisterReceiver(receiver)
-    }
-
-    fun finishActivity(){
-        _finishActivity.value = true
     }
 
     fun setUserName(name: String) {
@@ -122,7 +97,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
-                500 -> _saveUserName.value = RemoteStateHandler.BADRESPONSE
+                500 -> _saveUserName.value = RemoteStateHandler.BAD_RESPONSE
                 else -> _saveUserName.value = RemoteStateHandler.ERROR
             }
             _saveUserName.value = RemoteStateHandler.WAITING
@@ -184,7 +159,7 @@ class LoginViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalEncodingApi::class)
-    private fun generateKeyPair(keyAlias: String = BuildConfig.CIPHERKEY): String {
+    private fun generateKeyPair(keyAlias: String = BuildConfig.CIPHER_KEY): String {
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
         if (!keyStore.containsAlias(keyAlias)) {

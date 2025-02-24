@@ -40,7 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetTickets
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.profile.SupportViewModel
@@ -61,7 +61,7 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
     }
     UiHandler.ContentWithScaffold(
         title = "پشتیبانی", navigationIcon = {
-            IconButton(onClick = { navController.navigate(NavigationHandler.TicketScreen.route) }) {
+            IconButton(onClick = { navController.navigate(NavigationScreenHandler.TicketScreen.route) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add),
                     contentDescription = null,
@@ -216,6 +216,9 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                             }
                             if (showAnswerDialog.value) {
                                 UiHandler.AlertDialog(
+                                    onDismiss = {
+                                        showAnswerDialog.value = false
+                                    },
                                     imageId = AmozeshgamTheme.assets["amozeshgamBanner"]!!,
                                     title = "پاسخ",
                                     description = supportList.value!!.tickets[answerIndex.intValue].answer
@@ -230,7 +233,7 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                 shape = RoundedCornerShape(10.dp),
                                 onClick = {
                                     navController.navigate(
-                                        NavigationHandler.TicketScreen.route
+                                        NavigationScreenHandler.TicketScreen.route
                                     )
                                 }) {
                                 Row(
@@ -272,7 +275,7 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                             Spacer(modifier = Modifier.height(25.dp))
                             Button(
                                 onClick = {
-                                    navController.navigate(NavigationHandler.TicketScreen.route)
+                                    navController.navigate(NavigationScreenHandler.TicketScreen.route)
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = AmozeshgamTheme.colors["primary"]!!)
                             ) {

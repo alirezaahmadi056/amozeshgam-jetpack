@@ -1,11 +1,17 @@
 package com.amozeshgam.amozeshgam.handler
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.BlurMaskFilter
 import android.icu.text.DecimalFormat
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -23,12 +29,14 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -36,10 +44,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,16 +63,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -68,6 +87,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,9 +95,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -91,23 +115,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
+import androidx.core.app.PictureInPictureModeChangedInfo
+import androidx.core.util.Consumer
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.request.ImageRequest
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
+import com.amozeshgam.amozeshgam.viewmodel.home.HomeViewModel
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -224,7 +252,7 @@ object UiHandler {
     @Composable
     fun ContentWithLoading(
         loading: Boolean = true,
-        ifForShowContent: Boolean = false,
+        ifForShowContent: Boolean = true,
         worker: suspend () -> Boolean = { true },
         navController: NavController? = null,
         onDismissRequestForDefaultErrorHandler: () -> Unit = {},
@@ -323,13 +351,17 @@ object UiHandler {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 3.dp).height(20.dp),
+                modifier = Modifier
+                    .padding(horizontal = 3.dp)
+                    .height(20.dp),
                 text = text,
                 color = AmozeshgamTheme.colors["textColor"]!!,
                 fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
             )
             Image(
-                modifier = Modifier.padding(horizontal = 3.dp).size(20.dp),
+                modifier = Modifier
+                    .padding(horizontal = 3.dp)
+                    .size(20.dp),
                 painter = painterResource(id = image),
                 contentDescription = null,
             )
@@ -830,7 +862,7 @@ object UiHandler {
                     )
                     Text(
                         text = title,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
+                        fontFamily = AmozeshgamTheme.fonts["bold"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                 }
@@ -854,13 +886,13 @@ object UiHandler {
         worker: suspend () -> Unit = {},
         content: @Composable (modifier: Modifier) -> Unit,
     ) {
-        val coroutine = rememberCoroutineScope()
         content(
             if (loading) modifier.shimmer() else modifier
         )
-        coroutine.launch {
+        rememberCoroutineScope().launch {
             worker()
         }
+
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -877,39 +909,40 @@ object UiHandler {
             darkTheme = themeState(),
         ) {
             Scaffold(modifier = modifier, topBar = {
-                Surface(
-                    shadowElevation = 10.dp
-                ) {
-                    TopAppBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(2.dp, ambientColor = Color.White),
-                        title = {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = title,
-                                textAlign = TextAlign.End,
-                                color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+
+                TopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            50.dp,
+                            spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                            ambientColor = AmozeshgamTheme.colors["shadowColor"]!!
+                        ),
+                    title = {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = title,
+                            textAlign = TextAlign.End,
+                            color = AmozeshgamTheme.colors["textColor"]!!,
+                            fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+                        )
+                    },
+                    actions = {
+                        IconButton(
+                            modifier = Modifier.padding(horizontal = 5.dp),
+                            onClick = onBackButtonClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_right),
+                                contentDescription = null,
+                                tint = AmozeshgamTheme.colors["textColor"]!!
                             )
-                        },
-                        actions = {
-                            IconButton(
-                                modifier = Modifier.padding(horizontal = 5.dp),
-                                onClick = onBackButtonClick
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
-                                    contentDescription = null,
-                                    tint = AmozeshgamTheme.colors["textColor"]!!
-                                )
-                            }
-                            actionIcon()
-                        },
-                        navigationIcon = navigationIcon,
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = AmozeshgamTheme.colors["background"]!!)
-                    )
-                }
+                        }
+                        actionIcon()
+                    },
+                    navigationIcon = navigationIcon,
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = AmozeshgamTheme.colors["background"]!!)
+                )
             }) {
                 content(it)
             }
@@ -1036,4 +1069,465 @@ object UiHandler {
             }
         }
     }
+
+    @SuppressLint("CoroutineCreationDuringComposition")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun HomeScaffoldPattern(
+        navController: NavController,
+        viewModel: HomeViewModel = hiltViewModel(),
+        showDefaultTopAppBar: Boolean = true,
+        showDefaultBottomBar: Boolean = true,
+        content: @Composable (navController: NavController) -> Unit
+    ) {
+        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+        val navItems = viewModel.getNavItems()
+        val showMenuItem = remember {
+            mutableStateOf(false)
+        }
+        val snackHostState = remember {
+            SnackbarHostState()
+        }
+        val showRecipientNotificationDialog = remember {
+            mutableStateOf(false)
+        }
+        val context = LocalContext.current
+        val dontShowGetPermissionDialogAgain = remember {
+            mutableStateOf(false)
+        }
+        val lifecycle = LocalLifecycleOwner.current
+        AmozeshgamTheme(
+            darkTheme = UiHandler.themeState()
+        ) {
+            Scaffold(
+                topBar = {
+                    if (showDefaultTopAppBar) {
+                        TopAppBar(
+                            modifier = Modifier.shadow(
+                                50.dp,
+                                spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                                ambientColor = AmozeshgamTheme.colors["shadowColor"]!!
+                            ),
+                            title = {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Image(
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .fillMaxHeight()
+                                            .padding(12.dp),
+                                        painter = painterResource(id = AmozeshgamTheme.assets["amozeshgamBanner"]!!),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.FillHeight
+                                    )
+
+                                }
+                            },
+                            navigationIcon = {
+                                IconButton(modifier = Modifier.size(67.dp), onClick = {
+                                    navController.navigate(NavigationScreenHandler.NotificationScreen.route)
+                                }) {
+                                    if (GlobalUiModel.numberOfMessage.intValue != 0) {
+                                        BadgedBox(badge = {
+                                            Badge(
+                                                modifier = Modifier.padding(end = 10.dp),
+                                                containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
+                                                contentColor = AmozeshgamTheme.colors["primary"]!!
+                                            ) {
+                                                Text(
+                                                    text = GlobalUiModel.numberOfMessage.intValue.toString(),
+                                                    color = Color.White
+                                                )
+                                            }
+                                        }) {
+                                            Icon(
+                                                modifier = Modifier.padding(5.dp),
+                                                painter = painterResource(id = R.drawable.ic_notification),
+                                                contentDescription = null,
+                                                tint = AmozeshgamTheme.colors["textColor"]!!
+                                            )
+                                        }
+                                    } else {
+                                        Icon(
+                                            modifier = Modifier.padding(5.dp),
+                                            painter = painterResource(id = R.drawable.ic_notification),
+                                            contentDescription = null,
+                                            tint = AmozeshgamTheme.colors["textColor"]!!
+                                        )
+                                    }
+                                }
+                            },
+                            actions = {
+                                if (currentRoute == NavigationScreenHandler.HomeScreen.route) {
+                                    IconButton(onClick = {
+                                        showMenuItem.value = true
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_more),
+                                            contentDescription = null,
+                                            tint = AmozeshgamTheme.colors["textColor"]!!
+                                        )
+                                    }
+                                } else {
+                                    IconButton(onClick = {
+                                        viewModel.clearAllExoplayer()
+                                        navController.popBackStack()
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_arrow_right),
+                                            contentDescription = null,
+                                            tint = AmozeshgamTheme.colors["textColor"]!!
+                                        )
+                                    }
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(containerColor = AmozeshgamTheme.colors["background"]!!)
+                        )
+                    }
+                },
+                bottomBar = {
+                    if (showDefaultBottomBar) {
+                        BottomAppBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .shadow(
+                                    color = AmozeshgamTheme.colors["shadowColor"]!!,
+                                    offsetX = 4.dp,
+                                    offsetY = 4.dp,
+                                    blurRadius = 8.dp
+                                )
+                                .shadow(5.dp),
+
+                            containerColor = AmozeshgamTheme.colors["background"]!!,
+                            tonalElevation = 10.dp,
+                        ) {
+                            repeat(navItems.size) { index ->
+                                NavigationBarItem(selected = false, onClick = {
+                                    navController.navigate(navItems[index].route)
+                                }, icon = {
+                                    if (index == 2 && GlobalUiModel.numberOfCart.intValue != 0) {
+                                        BadgedBox(badge = {
+                                            Badge(
+                                                containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
+                                                contentColor = AmozeshgamTheme.colors["primary"]!!
+                                            ) {
+                                                Text(
+                                                    text = GlobalUiModel.numberOfCart.intValue.toString(),
+                                                    color = Color.White
+                                                )
+                                            }
+                                        }) {
+                                            Icon(
+                                                painter = painterResource(
+                                                    id = if (navItems[index].isSelected(
+                                                            currentRoute.toString()
+                                                        )
+                                                    ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
+                                                ),
+                                                contentDescription = null,
+                                                tint = if (navItems[index].isSelected(currentRoute.toString())) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
+                                            )
+                                        }
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(
+                                                id = if (navItems[index].isSelected(
+                                                        currentRoute.toString()
+                                                    )
+                                                ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
+                                            ),
+                                            contentDescription = null,
+                                            tint = if (navItems[index].isSelected(currentRoute.toString())) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
+                                        )
+                                    }
+                                })
+                            }
+                        }
+                    }
+                },
+                snackbarHost = {
+                    SnackbarHost(snackHostState) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                            Snackbar(
+                                actionColor = AmozeshgamTheme.colors["background"]!!,
+                                snackbarData = it,
+                                containerColor = AmozeshgamTheme.colors["textColor"]!!,
+                                contentColor = AmozeshgamTheme.colors["background"]!!
+                            )
+                        }
+                    }
+                },
+                containerColor = AmozeshgamTheme.colors["background"]!!
+            ) { padding ->
+                Box(modifier = Modifier.padding(padding)) {
+                    content(navController)
+                }
+                if (showMenuItem.value) {
+                    Popup(
+                        onDismissRequest = {
+                            showMenuItem.value = false
+                        },
+                        alignment = Alignment.TopEnd,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(padding)
+                                .shadow(5.dp, shape = RoundedCornerShape(10.dp))
+                                .background(color = AmozeshgamTheme.colors["background"]!!)
+                                .width(200.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(vertical = 5.dp)
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            showMenuItem.value = false
+                                            navController.navigate(NavigationScreenHandler.TicketScreen.route)
+                                        },
+                                    text = "پشتیبانی",
+                                    textAlign = TextAlign.Right,
+                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(vertical = 5.dp)
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            showMenuItem.value = false
+                                        },
+
+                                    text = "تماس با ما",
+                                    textAlign = TextAlign.Right,
+                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(vertical = 5.dp)
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            showMenuItem.value = false
+                                            viewModel.logOut()
+                                            navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
+                                                popUpTo(NavigationClusterHandler.Home.route) {
+                                                    inclusive = false
+                                                }
+                                            }
+                                        },
+                                    text = "خروج از حساب",
+                                    textAlign = TextAlign.Right,
+                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                )
+                            }
+                        }
+                    }
+                }
+                if (showRecipientNotificationDialog.value) {
+                    UiHandler.AlertDialog(
+                        onDismiss = {
+                            if (dontShowGetPermissionDialogAgain.value) {
+                                viewModel.doNotShowGetPermissionDialog(
+                                    true
+                                )
+                            }
+                            showRecipientNotificationDialog.value = false
+                        },
+                        imageId = AmozeshgamTheme.assets["amozeshgamBanner"]!!,
+                        title = "دسترسی خواندن اعلانات",
+                        description = "برای بهتر شدن خدمات ارايه شده توسط اموزشگام نیاز است که دسترسی خواندن اعلانات رو فعال کنید",
+                        buttons = {
+                            TextButton(
+                                modifier = Modifier.padding(5.dp),
+                                onClick = {
+                                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                contentPadding = PaddingValues(10.dp)
+                            ) {
+                                Text(
+                                    text = "فعال کردن",
+                                    color = AmozeshgamTheme.colors["primary"]!!,
+                                    fontFamily = AmozeshgamTheme.fonts["regular"]
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "دیگر نمایش نده",
+                                    color = AmozeshgamTheme.colors["textColor"]!!,
+                                    fontFamily = AmozeshgamTheme.fonts["regular"]
+                                )
+                                Checkbox(
+                                    checked = dontShowGetPermissionDialogAgain.value,
+                                    onCheckedChange = {
+                                        dontShowGetPermissionDialogAgain.value = it
+                                    },
+                                    colors = CheckboxDefaults.colors(
+                                        checkmarkColor = AmozeshgamTheme.colors["primary"]!!,
+                                        checkedColor = AmozeshgamTheme.colors["background"]!!
+                                    )
+                                )
+                            }
+                        }
+                    )
+                }
+                if (GlobalUiModel.errorExceptionDialog.value) {
+                    UiHandler.ErrorDialog(
+                        imageId = R.drawable.ic_error,
+                        text = ".برنامه با خطا مواجه شده است"
+                    ) {
+                        Text(
+                            modifier = Modifier.clickable {
+                                viewModel.reportBug(GlobalUiModel.errorExceptionMessage.value)
+                                GlobalUiModel.errorExceptionDialog.value = false
+                            },
+                            text = "اطلاع رسانی",
+                            color = AmozeshgamTheme.colors["errorColor"]!!,
+                            fontFamily = FontFamily(
+                                Font(R.font.yekan_bakh_regular)
+                            )
+                        )
+                        Text(
+                            modifier = Modifier.clickable {
+                                GlobalUiModel.errorExceptionDialog.value = false
+                            },
+                            text = "بستن",
+                            color = AmozeshgamTheme.colors["primary"]!!,
+                            fontFamily = AmozeshgamTheme.fonts["regular"]
+                        )
+                    }
+                }
+                if (GlobalUiModel.showNotificationDialog.value) {
+                    UiHandler.AlertDialog(
+                        imageId = R.drawable.ic_message,
+                        title = "",
+                        description = ""
+                    )
+                }
+                if (GlobalUiModel.showEmergencyUSBDialog.value) {
+                    UiHandler.AlertDialog(
+                        imageId = R.drawable.ic_error,
+                        title = "خطای امنیتی",
+                        description = "شما نمی توانید هنگام کار با اپلیکیشن آموزشگام دستگاه خارجی را به گوشی خود وصل کنید لطفا آن رو قطع کنید"
+                    )
+                }
+                LaunchedEffect(GlobalUiModel.requestForEnabledDarkMode.value) {
+                    if (GlobalUiModel.requestForEnabledDarkMode.value) {
+                        val snackResult = snackHostState.showSnackbar(
+                            message = "حالت بهینه رو فعال کن تا شارژت دیرتر تموم بشه\uD83D\uDE0A",
+                            actionLabel = "فعال کردن",
+                            duration = SnackbarDuration.Long
+                        )
+                        GlobalUiModel.requestForEnabledDarkMode.value = false
+                        when (snackResult) {
+                            SnackbarResult.ActionPerformed -> {
+                                UiHandler.changeTheme(
+                                    themeCode = GlobalUiModel.DARK_CODE, dataBaseInputOutput = null
+                                )
+                            }
+
+                            else -> Unit
+                        }
+                    }
+                }
+                LaunchedEffect(Unit) {
+                    val result = viewModel.checkHash()
+                    when (result) {
+                        RemoteStateHandler.BAD_RESPONSE -> {
+                            viewModel.logOut()
+                            navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                            Toast.makeText(
+                                context,
+                                "شما از این حساب اخراج شدید",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        else -> Unit
+
+                    }
+                }
+                LaunchedEffect(Unit) {
+
+                    showRecipientNotificationDialog.value =
+                        viewModel.showRecipientNotificationPermissionDialog()
+                    Log.i("jjj", "HomeScaffoldPattern: ${showRecipientNotificationDialog.value} ")
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun rememberIsInPIPMode(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val activity = LocalContext.current.findActivity()
+            val pipMode = remember {
+                mutableStateOf(activity.isInPictureInPictureMode)
+            }
+            DisposableEffect(activity) {
+                val observer = Consumer<PictureInPictureModeChangedInfo> { info ->
+                    pipMode.value = info.isInPictureInPictureMode
+                }
+                activity.addOnPictureInPictureModeChangedListener(
+                    observer
+                )
+                onDispose { activity.removeOnPictureInPictureModeChangedListener(observer) }
+            }
+            return pipMode.value
+        } else {
+            false
+        }
+    }
 }
+
+internal fun Context.findActivity(): ComponentActivity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is ComponentActivity) return context
+        context = context.baseContext
+    }
+    throw (RuntimeException("No Activity found in chain of ContextWrappers."))
+}
+
+fun Modifier.shadow(
+    color: Color = Color.Black,
+    offsetX: Dp = 0.dp,
+    offsetY: Dp = 0.dp,
+    blurRadius: Dp = 0.dp,
+) = then(
+    drawBehind {
+        drawIntoCanvas { canvas ->
+            val paint = Paint()
+            val frameworkPaint = paint.asFrameworkPaint()
+            if (blurRadius != 0.dp) {
+                frameworkPaint.maskFilter =
+                    (BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL))
+            }
+            frameworkPaint.color = color.toArgb()
+
+            val leftPixel = offsetX.toPx()
+            val topPixel = offsetY.toPx()
+            val rightPixel = size.width + topPixel
+            val bottomPixel = size.height + leftPixel
+
+            canvas.drawRect(
+                left = leftPixel,
+                top = topPixel,
+                right = rightPixel,
+                bottom = bottomPixel,
+                paint = paint,
+            )
+        }
+    }
+)

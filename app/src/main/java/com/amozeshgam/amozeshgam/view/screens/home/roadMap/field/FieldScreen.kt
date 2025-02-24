@@ -54,7 +54,7 @@ import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleField
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleFieldRequirement
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSinglePageSubFields
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.FieldAndSubFieldItem
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
@@ -324,7 +324,7 @@ fun ViewSubField(
                 imageUrl = subFieldData[index].image,
                 text = subFieldData[index].title
             ) {
-                navController.navigate(NavigationHandler.SingleSubFieldScreen.route + "/" + subFieldData[index].id)
+                navController.navigate(NavigationScreenHandler.SingleSubFieldScreen.route + "/" + subFieldData[index].id)
             }
         }
     }

@@ -14,7 +14,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestCreateComment
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestGetCourse
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndUserId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetCourse
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class SingleCourseViewModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
@@ -111,7 +111,7 @@ class SingleCourseViewModel @Inject constructor(@ApplicationContext private val 
         }
     }
 
-    fun createDeepLink(route: String) {
+    fun saveLinkToClipBoard(route: String) {
         val deepLink = ""
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

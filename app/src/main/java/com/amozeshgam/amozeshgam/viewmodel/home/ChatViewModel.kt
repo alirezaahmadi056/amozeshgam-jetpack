@@ -1,6 +1,8 @@
 package com.amozeshgam.amozeshgam.viewmodel.home
 
 import android.icu.util.Calendar
+import android.util.Log
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
@@ -9,7 +11,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestSendSupportMessage
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetMessages
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetMessagesData
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.ErrorHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
@@ -41,7 +43,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     lateinit var deviceHandler: DeviceHandler
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var suggestionHandler: SuggestionHandler
@@ -51,28 +53,21 @@ class ChatViewModel @Inject constructor() : ViewModel() {
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
-    private val _mqttConnected = MutableStateFlow<Boolean>(false)
-    val mqttConnected: StateFlow<Boolean> = _mqttConnected
+
     private val _messageSenderState = MutableStateFlow(RemoteStateHandler.WAITING)
     val messageSenderState: StateFlow<RemoteStateHandler> = _messageSenderState
     fun onStart() {
+        Log.i("jjj", "onStart: hello")
         errorHandler.handelAnyError {
-            val connection = mqtt.connect()
-            connection.actionCallback = object : IMqttActionListener {
-                override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    _mqttConnected.value = true
-                }
-
-                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    _mqttConnected.value = false
-                }
-            }
+            mqtt.connect()
         }
     }
 
+
+
     fun getAllMessages(): Deferred<ApiResponseGetMessages?> {
         return viewModelScope.async {
-            repository.getMessages(
+            repository.getAllMessages(
                 ApiRequestId(
                     id = dataBaseInputOutput.getData(DataStoreKey.userIdDataKey).toString()
                         .toIntOrNull() ?: 0
@@ -81,9 +76,14 @@ class ChatViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun subscribeMqtt(messages: ArrayList<ApiResponseGetMessagesData>, topic: String) {
+    suspend fun subscribeMqtt(messages: SnapshotStateList<ApiResponseGetMessagesData>) {
         mqtt.subscribe(
-            "message/${topic}",
+            "message/${
+                securityHandler.decryptData(
+                    dataBaseInputOutput.getData(DataStoreKey.hashDataKey)
+                        ?: byteArrayOf()
+                )
+            }",
             2,
             null,
             object : IMqttActionListener {
@@ -92,26 +92,21 @@ class ChatViewModel @Inject constructor() : ViewModel() {
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    _mqttConnected.value = false
                 }
             })
     }
 
 
-    private fun receiveMessage(messages: ArrayList<ApiResponseGetMessagesData>) {
+    private fun receiveMessage(messages: SnapshotStateList<ApiResponseGetMessagesData>) {
         mqtt.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable?) {
                 errorHandler.handelAnyError {
                     viewModelScope.launch {
                         subscribeMqtt(
-                            messages, topic = securityHandler.decryptData(
-                                dataBaseInputOutput.getData(DataStoreKey.hashDataKey)
-                                    ?: byteArrayOf()
-                            )
+                            messages
                         )
                     }
                 }
-                _mqttConnected.value = false
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
@@ -146,6 +141,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getTime(): String {
-        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toString()
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            .toString() + ":" + Calendar.getInstance().get(Calendar.MINUTE)
     }
 }

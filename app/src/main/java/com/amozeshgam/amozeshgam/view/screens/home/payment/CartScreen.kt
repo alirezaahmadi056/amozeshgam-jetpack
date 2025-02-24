@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,7 +44,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseCart
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseCartCoursesAndRoadMapData
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.CartItem
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
@@ -57,19 +59,26 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
     val cartData = remember {
         mutableStateOf<ApiResponseCart?>(null)
     }
-    val removeLoading = remember {
-        mutableStateOf(false)
+    val roadMaps = remember {
+        mutableStateListOf<ApiResponseCartCoursesAndRoadMapData>()
+    }
+    val courses = remember {
+        mutableStateListOf<ApiResponseCartCoursesAndRoadMapData>()
     }
     val lifecycle = LocalLifecycleOwner.current
     val context = LocalContext.current
     val removeIndex = remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(-1)
     }
     UiHandler.ContentWithLoading(
         loading = isLoading.value,
         ifForShowContent = cartData.value != null,
         worker = {
-            cartData.value = viewModel.getMyCart().await()
+            cartData.value = viewModel.getMyCart().await().also {
+                roadMaps.addAll(it?.roadMaps ?: listOf())
+                courses.addAll(it?.courses ?: listOf())
+            }
+
             isLoading.value = false
             true
         },
@@ -82,22 +91,21 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                 .fillMaxSize()
                 .background(AmozeshgamTheme.colors["background"]!!),
         ) {
-            if (cartData.value!!.courses.isNotEmpty() || cartData.value!!.roadMaps.isNotEmpty()) {
+            if (courses.isNotEmpty() || roadMaps.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(cartData.value!!.roadMaps.size) { index: Int ->
+                    items(roadMaps.size) { index: Int ->
                         CartItem(
-                            image = cartData.value!!.roadMaps[index].image,
-                            price = cartData.value!!.roadMaps[index].price,
-                            name = cartData.value!!.roadMaps[index].title,
-                            removeLoading = removeLoading.value
+                            image = roadMaps[index].image,
+                            price = roadMaps[index].price,
+                            name = roadMaps[index].title,
+                            removeLoading = removeIndex.intValue == index
                         ) {
-                            if (!removeLoading.value) {
-                                removeLoading.value = true
-                                viewModel.removeRoadMapFromMyCart(cartData.value!!.roadMaps[index].id)
+                            if (removeIndex.intValue != index) {
+                                viewModel.removeRoadMapFromMyCart(roadMaps[index].id)
                                 removeIndex.intValue = index
                             }
                         }
@@ -109,16 +117,15 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                             color = AmozeshgamTheme.colors["borderColor"]!!
                         )
                     }
-                    items(cartData.value!!.courses.size) { index: Int ->
+                    items(courses.size) { index: Int ->
                         CartItem(
-                            image = cartData.value!!.courses[index].image,
-                            price = cartData.value!!.courses[index].price,
-                            name = cartData.value!!.courses[index].title,
-                            removeLoading = removeLoading.value
+                            image = courses[index].image,
+                            price = courses[index].price,
+                            name = courses[index].title,
+                            removeLoading = removeIndex.intValue == index
                         ) {
-                            if (!removeLoading.value) {
-                                removeLoading.value = true
-                                viewModel.removeCourseFromMyCart(cartData.value!!.courses[index].id)
+                            if (removeIndex.intValue != index) {
+                                viewModel.removeCourseFromMyCart(courses[index].id)
                                 removeIndex.intValue = index
                             }
                         }
@@ -187,7 +194,7 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = AmozeshgamTheme.colors["background"]!!),
                             onClick = {
-                                navController.navigate(NavigationHandler.PaymentScreen.route)
+                                navController.navigate(NavigationScreenHandler.PaymentScreen.route)
                             }) {
                             Text(
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
@@ -222,21 +229,24 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
             }
         }
         LaunchedEffect(Unit) {
-            viewModel.removeCourseFromMyCartIsSuccess.observe(lifecycle){
-                if (it){
+            viewModel.removeCourseFromMyCartIsSuccess.observe(lifecycle) {
+                if (it) {
+                    courses.removeAt(removeIndex.intValue)
+                    removeIndex.intValue = -1
                     Toast.makeText(context, "با موفقیت حذف شد", Toast.LENGTH_SHORT).show()
-                }else{
+                } else {
                     Toast.makeText(context, "خطا در حذف", Toast.LENGTH_SHORT).show()
                 }
-                cartData.value!!.courses.removeAt(removeIndex.intValue)
+
             }
-            viewModel.removeRoadMapFromMyCartIsSuccess.observe(lifecycle){
-                if (it){
+            viewModel.removeRoadMapFromMyCartIsSuccess.observe(lifecycle) {
+                if (it) {
+                    roadMaps.removeAt(removeIndex.intValue)
+                    removeIndex.intValue = -1
                     Toast.makeText(context, "با موفقیت حذف شد", Toast.LENGTH_SHORT).show()
-                }else{
+                } else {
                     Toast.makeText(context, "خطا در حذف", Toast.LENGTH_SHORT).show()
                 }
-                cartData.value!!.roadMaps.removeAt(removeIndex.intValue)
             }
         }
     }

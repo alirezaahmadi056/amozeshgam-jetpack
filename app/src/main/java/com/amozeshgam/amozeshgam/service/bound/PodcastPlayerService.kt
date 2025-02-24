@@ -1,29 +1,17 @@
 package com.amozeshgam.amozeshgam.service.bound
 
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.annotation.OptIn
-import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.Player.RepeatMode
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import com.amozeshgam.amozeshgam.R
-import com.amozeshgam.amozeshgam.handler.NotificationPlayerState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import okhttp3.internal.notify
 import javax.inject.Inject
-import kotlin.math.log
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @AndroidEntryPoint
 class PodcastPlayerService : Service() {
@@ -37,14 +25,25 @@ class PodcastPlayerService : Service() {
     inner class Binder : android.os.Binder() {
         @OptIn(UnstableApi::class)
         suspend fun loadUri(uri: String, podcastTitle: String): Boolean {
-            this@PodcastPlayerService.podcastTitle = podcastTitle
-            exoPlayer.setMediaItem(MediaItem.fromUri(uri))
-            exoPlayer.prepare()
-            while (!exoPlayer.isLoading) {
-                delay(500)
+            return suspendCoroutine { continuation ->
+                this@PodcastPlayerService.podcastTitle = podcastTitle
+                exoPlayer.setMediaItem(MediaItem.fromUri(uri))
+                exoPlayer.prepare()
+
+                exoPlayer.addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_READY) {
+                            continuation.resume(true)
+                            exoPlayer.removeListener(this)
+                        } else if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
+                            continuation.resume(false)
+                            exoPlayer.removeListener(this)
+                        }
+                    }
+                })
             }
-            return true
         }
+
 
         fun pausePodcast() {
             exoPlayer.pause()
@@ -70,16 +69,15 @@ class PodcastPlayerService : Service() {
         fun getCurrentPosition(): Long {
             return exoPlayer.currentPosition
         }
+
+        fun releasePlayer() {
+            exoPlayer.release()
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder {
         return Binder()
     }
 
-
-    override fun onDestroy() {
-        exoPlayer.release()
-        super.onDestroy()
-    }
 
 }

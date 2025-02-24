@@ -2,6 +2,8 @@ package com.amozeshgam.amozeshgam.viewmodel.home
 
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +16,7 @@ import com.amozeshgam.amozeshgam.data.model.local.NavItem
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestCheckHash
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestReportBug
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseHomeData
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.SecurityHandler
@@ -33,7 +35,7 @@ class HomeViewModel @Inject constructor(@ApplicationContext private val context:
     lateinit var model: HomeActivityModel
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var exoPlayer: ExoPlayer
@@ -53,15 +55,36 @@ class HomeViewModel @Inject constructor(@ApplicationContext private val context:
         return model.navItems
     }
 
+    fun doNotShowGetPermissionDialog(value: Boolean) {
+        viewModelScope.launch {
+            dataBaseInputOutput.saveData {
+                it[DataStoreKey.showGetNotificationListenerPermissionDialog] = value
+            }
+        }
+    }
+
+    suspend fun showRecipientNotificationPermissionDialog(): Boolean {
+        val accessShowDialog =
+            dataBaseInputOutput.getData(DataStoreKey.showGetNotificationListenerPermissionDialog)
+                ?: false
+        val packageNames = Settings.Secure.getString(
+            context.contentResolver,
+            "enabled_notification_listeners"
+        )
+        val myPackageName = context.packageName
+        return if (accessShowDialog) {
+            false
+        } else {
+            !(!TextUtils.isEmpty(packageNames) && packageNames.contains(myPackageName))
+        }
+    }
+
     fun getHomeData(): Deferred<ApiResponseHomeData?> {
         return viewModelScope.async {
             repository.getHomeData()
         }
     }
 
-    fun startService() {
-        context.startService(Intent(context, ScreenStatusService::class.java))
-    }
 
     fun clearAllExoplayer() {
         exoPlayer.pause()
@@ -81,23 +104,22 @@ class HomeViewModel @Inject constructor(@ApplicationContext private val context:
         }
     }
 
-    fun checkHash() {
-        viewModelScope.launch {
-            val response = repository.checkHash(
-                body = ApiRequestCheckHash(
-                    deviceId = deviceHandler.getAndroidId(),
-                    hash = securityHandler.decryptData(
-                        dataBaseInputOutput.getData(DataStoreKey.hashDataKey) ?: byteArrayOf()
-                    )
+    suspend fun checkHash(): RemoteStateHandler {
+        val response = repository.checkHash(
+            body = ApiRequestCheckHash(
+                deviceId = deviceHandler.getAndroidId(),
+                hash = securityHandler.decryptData(
+                    dataBaseInputOutput.getData(DataStoreKey.hashDataKey) ?: byteArrayOf()
                 )
             )
-            _hashIsValid.value = when (response) {
-                200 -> RemoteStateHandler.OK
-                500 -> RemoteStateHandler.BADRESPONSE
-                else -> RemoteStateHandler.ERROR
-            }
+        )
+        return when (response) {
+            200 -> RemoteStateHandler.OK
+            500 -> RemoteStateHandler.BAD_RESPONSE
+            else -> RemoteStateHandler.ERROR
         }
     }
+
 
     fun logOut() {
         dataBaseInputOutput.saveData {

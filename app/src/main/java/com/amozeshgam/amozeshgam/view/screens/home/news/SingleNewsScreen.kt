@@ -48,7 +48,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetPost
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.handler.exoplayerHandler.view.VideoPlayer
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
@@ -157,7 +157,7 @@ fun ViewSingleNews(viewModel: SingleNewsViewModel = hiltViewModel(), navControll
             UiHandler.AnythingRow(
                 itemOne = {
                     IconButton(onClick = {
-                        viewModel.createLink(NavigationHandler.SingleNewsScreen.route + "/" + id.toString())
+                        viewModel.createLink(NavigationScreenHandler.SingleNewsScreen.route + "/" + id.toString())
                     }) {
                         Icon(
                             modifier = Modifier.size(30.dp),

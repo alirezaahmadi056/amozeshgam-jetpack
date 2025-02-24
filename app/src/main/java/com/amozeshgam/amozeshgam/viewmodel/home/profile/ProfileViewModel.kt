@@ -1,7 +1,5 @@
 package com.amozeshgam.amozeshgam.viewmodel.home.profile
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
@@ -10,7 +8,7 @@ import com.amozeshgam.amozeshgam.data.model.local.HomeActivityModel
 import com.amozeshgam.amozeshgam.data.model.local.ProfileItem
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetProfile
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.ErrorHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
@@ -39,7 +37,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
     lateinit var deviceHandler: DeviceHandler
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
     private val _enabledAmozeshgamKeyboard = MutableStateFlow<Boolean>(false)
     val enabledAmozeshgamKeyboard: StateFlow<Boolean> = _enabledAmozeshgamKeyboard
     private val _enabledAmozeshgamNotification = MutableStateFlow<Boolean>(true)

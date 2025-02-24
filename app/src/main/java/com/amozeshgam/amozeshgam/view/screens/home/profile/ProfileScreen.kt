@@ -1,7 +1,6 @@
 package com.amozeshgam.amozeshgam.view.screens.home.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,7 +49,7 @@ import coil.compose.AsyncImage
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetProfile
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.profile.ProfileViewModel
@@ -80,7 +79,6 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
         worker = {
             viewModel.getCurrentNotificationState()
             userData.value = viewModel.getUserData().await()
-            Log.i("jjj", "ViewProfile: ${userData.value?.avatar}")
             isLoading.value = false
             true
         }, onDismissRequestForDefaultErrorHandler = {
@@ -125,7 +123,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                             .align(Alignment.CenterHorizontally)
                             .clickable {
                                 navController.navigate(
-                                    "${NavigationHandler.ProfileEditorScreen.route}/${userData.value!!.username}/${userData.value!!.phone}/${userData.value!!.birthday ?: ""}/${userData.value!!.email ?: ""}/${
+                                    "${NavigationScreenHandler.ProfileEditorScreen.route}/${userData.value!!.username}/${userData.value!!.phone}/${userData.value!!.birthday ?: ""}/${userData.value!!.email ?: ""}/${
                                         Uri.encode(
                                             userData.value!!.avatar
                                         )
@@ -147,7 +145,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                         })
                     UiHandler.WalletCardProfile(
                         userData.value!!.walletInventory.toInt(),
-                        onTransactionClick = { navController.navigate(NavigationHandler.MyTransactionsScreen.route) },
+                        onTransactionClick = { navController.navigate(NavigationScreenHandler.MyTransactionsScreen.route) },
                         onChargingClick = { showWalletCharge.value = true })
                     repeat(item.size) { index ->
                         Box(
@@ -376,7 +374,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                                     },
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = AmozeshgamTheme.colors["primary"]!!,
-                                        checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!
+                                        checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!.copy(alpha = 1f)
                                     ),
                                     thumbContent = {
                                         Box(
@@ -391,35 +389,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                                     color = AmozeshgamTheme.colors["textColor"]!!
                                 )
                             }
-                            Row(
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Switch(
-                                    checked = enabledKeyboard.value,
-                                    onCheckedChange = {
-                                        enabledKeyboard.value = it
-                                    },
-                                    colors = SwitchDefaults.colors(
-                                        checkedThumbColor = AmozeshgamTheme.colors["primary"]!!,
-                                        checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!
-                                    ),
-                                    thumbContent = {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .clip(RoundedCornerShape(100))
-                                        )
-                                    }
-                                )
-                                Text(
-                                    text = "فعال کیبورد آموزشگام",
-                                    color = AmozeshgamTheme.colors["textColor"]!!
-                                )
-                            }
+
                         }
                     }
                 }

@@ -5,16 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BroadCastSms @Inject constructor() : BroadcastReceiver() {
     private val _codes = MutableStateFlow<ArrayList<String>>(arrayListOf())
     val codes: StateFlow<ArrayList<String>> = _codes
-    var codeChars = arrayListOf<String>()
+    private var codeChars = arrayListOf<String>()
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
             val sms = Telephony.Sms.Intents.getMessagesFromIntent(intent)
@@ -27,6 +27,8 @@ class BroadCastSms @Inject constructor() : BroadcastReceiver() {
                     codeChars.add(i.toString())
                 }
                 _codes.value = codeChars
+            } else {
+                Log.i("jjj", "onReceive: ${message}")
             }
         }
     }

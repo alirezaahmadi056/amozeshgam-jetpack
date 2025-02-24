@@ -21,4 +21,6 @@ object DataStoreKey {
     val tourDataKey = booleanPreferencesKey("tour")
     val enabledNotification = booleanPreferencesKey("enabled-notification")
     val enabledAmozeshgamKeyboard = booleanPreferencesKey("enabled-amozeshgam-keyboard")
+    val showGetNotificationListenerPermissionDialog =
+        booleanPreferencesKey("show-get-notification-listener-permission-dialog")
 }

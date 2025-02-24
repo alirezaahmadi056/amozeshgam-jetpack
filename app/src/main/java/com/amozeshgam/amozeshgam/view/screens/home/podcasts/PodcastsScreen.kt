@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseAllPodcasts
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.PodcastItem
 import com.amozeshgam.amozeshgam.viewmodel.home.podcasts.PodcastViewModel
@@ -43,7 +43,7 @@ fun ViewPodcasts(navController: NavController, viewModel: PodcastViewModel = hil
                         text = podcastsData.value!!.podcasts[index].title,
                         speech = podcastsData.value!!.podcasts[index].speaker,
                         onClick = {
-                            navController.navigate("${NavigationHandler.PodcastPlayerScreen.route}/${podcastsData.value!!.podcasts[index].id}")
+                            navController.navigate("${NavigationScreenHandler.PodcastPlayerScreen.route}/${podcastsData.value!!.podcasts[index].id}")
                         }
                     )
                 }

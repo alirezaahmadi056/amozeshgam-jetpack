@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -407,14 +408,6 @@ fun CourseItem(
 
 }
 
-@Composable
-fun NewsItem(modifier: Modifier = Modifier, imageUrl: String, onClick: () -> Unit = {}) {
-    Box(modifier = modifier.clickable {
-        onClick()
-    }) {
-        AsyncImage(model = null, contentDescription = null)
-    }
-}
 
 @Composable
 fun PodcastItem(
@@ -476,6 +469,124 @@ fun PodcastItem(
 
 }
 
+@Composable
+fun RoadMapAbilityItem(image: String, text: String, itemNumber: Int) {
+    Row(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .height(80.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(0.9f)
+                .padding(5.dp)
+                .shadow(
+                    5.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                    ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                ),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = AmozeshgamTheme.colors["background"]!!
+            ),
+            elevation = CardDefaults.cardElevation(5.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = text,
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
+                    color = AmozeshgamTheme.colors["textColor"]!!,
+                    overflow = TextOverflow.Ellipsis
+                )
+                AsyncImage(
+                    modifier = Modifier.size(50.dp),
+                    model = image,
+                    contentDescription = null
+                )
+            }
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(0.1f)
+                .padding(5.dp)
+                .shadow(
+                    5.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                    ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                ),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = AmozeshgamTheme.colors["background"]!!
+            ),
+            elevation = CardDefaults.cardElevation(5.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = itemNumber.toString(),
+                    color = AmozeshgamTheme.colors["textColor"]!!,
+                    fontFamily = AmozeshgamTheme.fonts["regular"]!!
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RoadMapSoftwareCanBuild(modifier: Modifier = Modifier,image: String, text: String) {
+    Card(
+        modifier = modifier
+            .padding(10.dp)
+            .width(80.dp)
+            .height(100.dp)
+            .shadow(
+                5.dp,
+                shape = RoundedCornerShape(10.dp),
+                ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                spotColor = AmozeshgamTheme.colors["shadowColor"]!!
+            ),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AmozeshgamTheme.colors["background"]!!
+        ),
+        elevation = CardDefaults.cardElevation(5.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(2.dp).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = image,
+                contentDescription = null
+            )
+            Text(
+                text = text,
+                fontFamily = AmozeshgamTheme.fonts["regular"],
+                color = AmozeshgamTheme.colors["textColor"]!!,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @Composable
 fun InformationItem(image: Int, title: String, text: String) {
@@ -769,13 +880,14 @@ fun AdminChatItem(message: String, date: String) {
                 elevation = CardDefaults.cardElevation(10.dp),
                 colors = CardDefaults.cardColors(containerColor = AmozeshgamTheme.colors["primary"]!!)
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box {
                     Text(
                         modifier = Modifier
-                            .padding(5.dp)
+                            .padding(15.dp)
                             .align(Alignment.Center),
                         text = message,
-                        color = Color.Black,
+                        color = Color.White,
+                        fontSize = 17.sp,
                         textAlign = TextAlign.End
                     )
                 }
@@ -1247,7 +1359,7 @@ fun OptionItem(
         }) {
         Row(
             modifier = Modifier
-                .padding(vertical = 15.dp,horizontal = 10.dp)
+                .padding(vertical = 15.dp, horizontal = 10.dp)
                 .fillMaxSize(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
@@ -1290,7 +1402,9 @@ fun MyRoadMapItem(
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp)
         ) {
             Card(
                 modifier = Modifier
@@ -1314,7 +1428,11 @@ fun MyRoadMapItem(
                             tint = Color.White
                         )
                     }
-                    Text(text = roadMapName, color = Color.White)
+                    Text(
+                        text = roadMapName,
+                        color = Color.White,
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
+                    )
                     AsyncImage(
                         modifier = Modifier.size(40.dp),
                         model = roadMapImage,
@@ -1329,16 +1447,54 @@ fun MyRoadMapItem(
             ) {
                 Text(
                     text = "${percentRoadmap}%",
-                    color = AmozeshgamTheme.colors["textColor"]!!
+                    color = AmozeshgamTheme.colors["textColor"]!!,
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
-                LinearProgressIndicator(modifier = Modifier
-                    .padding(5.dp)
-                    .weight(1f),
-                    progress = { 10f })
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    LinearProgressIndicator(modifier = Modifier
+                        .padding(5.dp)
+                        .weight(1f),
+                        color = AmozeshgamTheme.colors["primary"]!!,
+                        progress = { (percentRoadmap / 100).toFloat() })
+                }
                 Text(
-                    text = "درصد پیشرفت", color = AmozeshgamTheme.colors["textColor"]!!
+                    text = "درصد پیشرفت",
+                    color = AmozeshgamTheme.colors["textColor"]!!,
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun RoadMapExamItem(modifier: Modifier = Modifier, title: String, onClick: () -> Unit = {}) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = AmozeshgamTheme.colors["borderColor"]!!,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_left),
+                contentDescription = null
+            )
+            Text(
+                text = title,
+                fontFamily = AmozeshgamTheme.fonts["bold"],
+                color = AmozeshgamTheme.colors["textColor"]!!
+            )
         }
     }
 }

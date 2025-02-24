@@ -1,6 +1,5 @@
 package com.amozeshgam.amozeshgam.viewmodel.home.roadMap
 
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,9 +9,8 @@ import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.local.HomeActivityModel
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestAddToCart
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
-import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleField
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleSubField
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -22,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SubFieldViewModel @Inject constructor() : ViewModel() {
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var model: HomeActivityModel

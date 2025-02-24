@@ -18,4 +18,5 @@ object GlobalUiModel {
     val dialogTitle = mutableStateOf("")
     val dialogBody = mutableStateOf("")
     val textProviderData = mutableStateOf<String?>(null)
+    val showEmergencyUSBDialog = mutableStateOf(false)
 }

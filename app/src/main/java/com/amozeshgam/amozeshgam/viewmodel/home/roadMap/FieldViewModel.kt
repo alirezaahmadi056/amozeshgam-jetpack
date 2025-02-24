@@ -10,7 +10,7 @@ import com.amozeshgam.amozeshgam.data.model.local.HomeActivityModel
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestAddToCart
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleField
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -23,7 +23,7 @@ class FieldViewModel @Inject constructor() : ViewModel() {
     lateinit var model: HomeActivityModel
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
 

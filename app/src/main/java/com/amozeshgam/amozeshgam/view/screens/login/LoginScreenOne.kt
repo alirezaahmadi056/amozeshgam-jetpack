@@ -53,7 +53,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
@@ -250,8 +250,8 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                     buttonIsLoading.value = false
                     errorDialogButtonIsLoading.value = false
                     when (it) {
-                        RemoteStateHandler.OK -> navController.navigate("${NavigationHandler.LoginTwoScreen.route}/${phoneNumber.value}")
-                        RemoteStateHandler.BADRESPONSE -> showErrorDialog.value = true
+                        RemoteStateHandler.OK -> navController.navigate("${NavigationScreenHandler.LoginScreenTwo.route}/${phoneNumber.value}")
+                        RemoteStateHandler.BAD_RESPONSE -> showErrorDialog.value = true
                         RemoteStateHandler.ERROR -> showErrorDialog.value = true
                         else -> Unit
                     }

@@ -12,7 +12,7 @@ import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndUserId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetPost
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Deferred
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class SingleNewsViewModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput

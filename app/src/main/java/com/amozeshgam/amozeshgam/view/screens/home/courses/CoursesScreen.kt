@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseAllCoursesList
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.CourseItem
 import com.amozeshgam.amozeshgam.viewmodel.home.course.CoursesViewModel
@@ -132,7 +132,7 @@ fun ViewCourses(navController: NavController, viewModel: CoursesViewModel = hilt
                                 time = filteredPackageData.value!![index].time,
                                 teacher = filteredPackageData.value!![index].teacher,
                                 onClick = {
-                                    navController.navigate("${NavigationHandler.SingleCourseScreen.route}/${packagesData.value!![index].id}")
+                                    navController.navigate("${NavigationScreenHandler.SingleCourseScreen.route}/${packagesData.value!![index].id}")
                                 }
                             )
                         }

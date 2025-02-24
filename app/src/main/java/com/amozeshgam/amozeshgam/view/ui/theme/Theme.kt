@@ -1,15 +1,13 @@
 package com.amozeshgam.amozeshgam.view.ui.theme
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.view.WindowCompat
 import com.amozeshgam.amozeshgam.handler.UiHandler
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val customThemeColorDark =
     hashMapOf(
@@ -87,11 +85,10 @@ fun AmozeshgamTheme(
         else -> customThemeIdLight
     }
     val view = LocalView.current
+    val windowController =  rememberSystemUiController()
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme["primary"]!!.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            windowController.setStatusBarColor(colorScheme["primary"]!!)
         }
     }
 

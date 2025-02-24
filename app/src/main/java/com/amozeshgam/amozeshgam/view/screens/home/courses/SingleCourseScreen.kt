@@ -46,7 +46,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +61,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetCourse
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetCourseComment
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetCourseCourseData
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetCourseSeasons
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.CommentItem
@@ -103,7 +102,7 @@ fun ViewSingleCourse(
             liked.value = courseData.value?.course?.like ?: false
             isLoading.value = false
             true
-        },onDismissRequestForDefaultErrorHandler = {
+        }, onDismissRequestForDefaultErrorHandler = {
             navController.popBackStack()
         }) {
         AmozeshgamTheme(
@@ -116,7 +115,8 @@ fun ViewSingleCourse(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = {
-                        navController.navigate(NavigationHandler.MyCartScreen.route)
+                        viewModel.saveLinkToClipBoard("https://app.amozeshgam.com/course/${courseId}")
+                        navController.navigate(NavigationScreenHandler.MyCartScreen.route)
                     }) {
                         Icon(
                             modifier = Modifier.size(30.dp),
@@ -126,7 +126,7 @@ fun ViewSingleCourse(
                         )
                     }
                     IconButton(onClick = {
-                        viewModel.createDeepLink("${NavigationHandler.SingleCourseScreen.route}/$courseId")
+
                         Toast.makeText(context, "کپی شد", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(
@@ -232,6 +232,9 @@ fun ViewSingleCourseData(
     val addToMyCartLoading = remember {
         mutableStateOf(false)
     }
+    val hasBeenPurchased = remember {
+        mutableStateOf(course.hasBeenPurchased)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -334,7 +337,7 @@ fun ViewSingleCourseData(
             Spacer(modifier = Modifier.height(90.dp))
         }
 
-        if (!course.hasBeenPurchased) {
+        if (!hasBeenPurchased.value) {
             Card(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -356,31 +359,32 @@ fun ViewSingleCourseData(
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .padding(10.dp),
+                            .padding(horizontal = 10.dp, vertical = 2.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = if (course.finalPrice == 0) "رایگان!" else DecimalFormat("0,000").format(
+                            text = if (course.finalPrice == 0) "رایگان!" else DecimalFormat(",000").format(
                                 course.finalPrice
                             ),
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
                             color = AmozeshgamTheme.colors["textColor"]!!,
-                            fontSize = 22.sp
+                            fontSize = 20.sp,
+                            fontFamily = AmozeshgamTheme.fonts["regular"],
                         )
-                        if (course.finalPrice == 0) {
+                        if (course.finalPrice != course.price.toInt()) {
                             Text(
-                                text = DecimalFormat(",000").format(course.price),
+                                text = DecimalFormat(",000").format(course.price.toInt()),
                                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
-                                style = TextStyle(
-                                    textDecoration = TextDecoration.LineThrough
-                                )
+                                textDecoration = TextDecoration.LineThrough,
+                                fontSize = 12.sp,
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                         }
                         Text(
                             text = "تومان",
                             color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
+                            fontFamily = AmozeshgamTheme.fonts["regular"]
                         )
                     }
                     if (!addedToMyCart.value) {
@@ -425,7 +429,7 @@ fun ViewSingleCourseData(
                                 .width((LocalConfiguration.current.screenWidthDp / 1.5).dp)
                                 .height(50.dp),
                             onClick = {
-                                navController.navigate(NavigationHandler.MyCartScreen.route)
+                                navController.navigate(NavigationScreenHandler.MyCartScreen.route)
                             },
                             border = BorderStroke(1.dp, AmozeshgamTheme.colors["primary"]!!),
                             colors = ButtonDefaults.buttonColors(
@@ -447,12 +451,18 @@ fun ViewSingleCourseData(
                 }
             }
         }
+        if (addCourseToMyCartError.value) {
+
+        }
         LaunchedEffect(Unit) {
             viewModel.addCourseToMyCart.observe(lifecycle) {
                 addToMyCartLoading.value = false
                 when (it) {
                     RemoteStateHandler.OK -> {
                         addedToMyCart.value = true
+                        if (course.finalPrice == 0) {
+                            hasBeenPurchased.value = true
+                        }
                     }
 
                     RemoteStateHandler.ERROR -> {
@@ -549,7 +559,9 @@ fun ViewSingleCourseComment(
                 ) {
                     Spacer(modifier = Modifier.size(30.dp))
                     Text(
-                        modifier = Modifier.padding(5.dp),
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .heightIn(max = 200.dp),
                         text = "ثبت دیدگاه",
                         fontSize = 24.sp,
                         fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
@@ -572,7 +584,7 @@ fun ViewSingleCourseComment(
                 RatingBar(
                     modifier = Modifier.padding(5.dp),
                     rating = ratingComment.floatValue,
-                    tintEmpty = Color.Green,
+                    tintEmpty = Color.White,
                     tintFilled = Color.Red,
                     imageVectorEmpty = ImageVector.vectorResource(id = R.drawable.ic_like),
                     imageVectorFilled = ImageVector.vectorResource(id = R.drawable.ic_like_fill),

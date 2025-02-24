@@ -1,40 +1,53 @@
 package com.amozeshgam.amozeshgam.handler
 
-enum class RemoteStateHandler{
+enum class RemoteStateHandler {
     WAITING,
     ERROR,
     OK,
     LOADING,
-    BADRESPONSE
+    BAD_RESPONSE
 }
-enum class ValidatingStateHandler{
+
+enum class ValidatingStateHandler {
     VALID,
     INVALID,
     ERROR,
     WAITING
 }
-enum class BatteryStateHandler{
-    HIGHLEVEL,
-    MIDLEVEL,
-    LOWLEVEL
+
+enum class BatteryStateHandler {
+    HIGH_LEVEL,
+    MID_LEVEL,
+    LOW_LEVEL
 }
-enum class NotificationPlayerState{
+
+enum class NotificationPlayerState {
     PLAY,
     PAUSE
 }
-enum class DownloadServiceState{
+
+enum class DownloadServiceState {
     START,
     PAUSE,
     CANCEL
 }
 
-enum class AppWidgetState{
+enum class AppWidgetState {
     STARTAPP,
-    OPENCOURSESCREEN,
-    OPENROADMAPSCREEN
+    OPEN_COURSE_SCREEN,
+    OPEN_ROADMAP_SCREEN
 }
-enum class ActivityName{
-    LoginActivity,
-    HomeActivity,
-    TourActivity
+
+enum class ScreenName{
+    LOGIN,
+    HOME,
+    SPLASH,
+    TOUR
+}
+
+enum class BiometricState {
+    AUTHENTICATED,
+    SUCCESS,
+    ERROR,
+    NO_BIOMETRIC_AVAILABLE
 }

@@ -2,7 +2,7 @@ package com.amozeshgam.amozeshgam
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ class HomeTest {
     val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Before
     fun onStartTesting() = hiltRule.inject()

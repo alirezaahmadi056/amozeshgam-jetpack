@@ -6,7 +6,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseAllCourses
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseAllCoursesList
 import com.amozeshgam.amozeshgam.data.model.local.CourseFilter
 import com.amozeshgam.amozeshgam.data.model.local.HomeActivityModel
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class CoursesViewModel @Inject constructor() : ViewModel() {
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var model: HomeActivityModel

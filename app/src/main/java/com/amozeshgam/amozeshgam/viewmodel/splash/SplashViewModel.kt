@@ -4,29 +4,29 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.view.Window
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amozeshgam.amozeshgam.broadcast.BroadCastSms
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
-import com.amozeshgam.amozeshgam.data.model.local.SplashActivityModel
-import com.amozeshgam.amozeshgam.data.repository.SplashActivityRepository
-import com.amozeshgam.amozeshgam.handler.ActivityName
-import com.amozeshgam.amozeshgam.handler.DeepLinkHandler
+import com.amozeshgam.amozeshgam.data.model.local.SplashClusterModel
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetTour
+import com.amozeshgam.amozeshgam.data.repository.SplashClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
+import com.amozeshgam.amozeshgam.handler.ScreenName
 import com.amozeshgam.amozeshgam.handler.SuggestionHandler
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,33 +39,34 @@ class SplashViewModel @Inject constructor(@ApplicationContext private val contex
     val isAllPermissionGranted: LiveData<Boolean> = _isAllPermissionGranted
     private val _showErrorDialog = MutableStateFlow<Boolean>(false)
     val showErrorDialog: StateFlow<Boolean> = _showErrorDialog
-    private val _whitchActivityToGo = MutableLiveData<ActivityName>()
-    val witchActivityToGo: LiveData<ActivityName> = _whitchActivityToGo
+    private val _whichActivityToGo = MutableLiveData<ScreenName>()
+    val whichActivityToGo: LiveData<ScreenName> = _whichActivityToGo
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     @Inject
-    lateinit var repository: SplashActivityRepository
+    lateinit var repository: SplashClusterRepository
 
     @Inject
     lateinit var suggestionHandler: SuggestionHandler
 
     @Inject
-    lateinit var splashModel: SplashActivityModel
+    lateinit var splashModel: SplashClusterModel
 
-    @Inject
-    lateinit var deepLinkHandler: DeepLinkHandler
+
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
 
     @Inject
     lateinit var deviceHandler: DeviceHandler
+
+    @Inject
+    lateinit var receiver: BroadCastSms
     fun onStartUp() {
         loadThemeFromDataBase()
         subscribeTopic()
     }
-
 
     private suspend fun userIsLoggedIn(): Boolean {
         return dataBaseInputOutput.getData(DataStoreKey.loginDataKey) ?: false
@@ -75,16 +76,6 @@ class SplashViewModel @Inject constructor(@ApplicationContext private val contex
         return dataBaseInputOutput.getData(DataStoreKey.tourDataKey) ?: false
     }
 
-    fun hideStatusBar(window: Window) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsetsCompat.Type.systemBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
-    }
 
     private suspend fun checkAppVersion(): Pair<Boolean, Int?> {
         val (response, code) = repository.apiGetAppVersion()
@@ -118,18 +109,16 @@ class SplashViewModel @Inject constructor(@ApplicationContext private val contex
 
     fun checkVersionAndWitchActivityToGo() {
         _isLoading.value = true
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             val versionChecked = checkAppVersion()
             _isLoading.value = false
             if (versionChecked.first) {
                 val userIsLoggedIn = userIsLoggedIn()
                 val userSeeTour = userSeeTour()
-                CoroutineScope(Dispatchers.Main).launch {
-                    _whitchActivityToGo.value = when {
-                        userIsLoggedIn -> ActivityName.HomeActivity
-                        userSeeTour -> ActivityName.LoginActivity
-                        else -> ActivityName.TourActivity
-                    }
+                _whichActivityToGo.value = when {
+                    userIsLoggedIn -> ScreenName.HOME
+                    userSeeTour -> ScreenName.LOGIN
+                    else -> ScreenName.TOUR
                 }
             } else {
                 _showErrorDialog.value = true
@@ -155,10 +144,21 @@ class SplashViewModel @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    fun handleTextProvider(text: String) {
-        suggestionHandler.setTextToTextProvider(text)
+
+    fun apiGetTourData(): Deferred<ApiResponseGetTour?> {
+        return viewModelScope.async {
+            repository.apiGetTourData()
+        }
     }
 
+
+    fun saveTourData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            dataBaseInputOutput.saveData {
+                it[DataStoreKey.tourDataKey] = true
+            }
+        }
+    }
     @SuppressLint("HardwareIds")
     private fun subscribeTopic() {
         viewModelScope.launch {

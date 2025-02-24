@@ -1,8 +1,6 @@
 package com.amozeshgam.amozeshgam.view.screens.home.chat
 
-import android.view.ViewTreeObserver
 import android.widget.Toast
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -26,28 +25,27 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -56,7 +54,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
-import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetMessages
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetMessagesData
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
@@ -64,6 +61,7 @@ import com.amozeshgam.amozeshgam.view.items.AdminChatItem
 import com.amozeshgam.amozeshgam.view.items.UserChatItem
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.ChatViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ViewChat(
@@ -75,29 +73,25 @@ fun ViewChat(
     val message = remember {
         mutableStateOf("")
     }
-    val lazyColumnTopPadding = remember {
-        mutableStateOf(0.dp)
-    }
-    val view = LocalView.current
-    val keyboardIsOpen = remember {
-        mutableStateOf(false)
-    }
+    val lazyColumnState = rememberLazyListState()
+
     val isLoading = remember {
         mutableStateOf(true)
     }
     val messageData = remember {
-        mutableStateOf<ApiResponseGetMessages?>(null)
+        mutableStateListOf<ApiResponseGetMessagesData>()
     }
+    val coroutine = rememberCoroutineScope()
     val messageSenderState = viewModel.messageSenderState.collectAsState()
     val context = LocalContext.current
-    val mqttConnected = viewModel.mqttConnected.collectAsState()
     UiHandler.ContentWithLoading(
         loading = isLoading.value,
-        ifForShowContent = messageData.value != null && mqttConnected.value,
         worker = {
-            messageData.value = viewModel.getAllMessages().await()
+            viewModel.getAllMessages().await().also {
+                messageData.addAll((it?.message ?: listOf()).toMutableStateList())
+            }
+
             viewModel.onStart()
-            viewModel.subscribeMqtt(messageData.value!!.message, topic = "")
             isLoading.value = false
             true
         },
@@ -117,7 +111,7 @@ fun ViewChat(
                     ),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                if (messageData.value!!.message.isEmpty()) {
+                if (messageData.isEmpty()) {
                     Box {
                         LottieAnimation(
                             modifier = Modifier.align(Alignment.Center),
@@ -150,24 +144,28 @@ fun ViewChat(
                 } else {
                     LazyColumn(
                         modifier = Modifier
-                            .animateContentSize()
-                            .padding(top = if (keyboardIsOpen.value) lazyColumnTopPadding.value else 0.dp)
                             .weight(1f)
                             .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        state = lazyColumnState
                     ) {
-                        items(messageData.value!!.message.size) { index ->
-                            if (messageData.value!!.message[index].senderType == "user") {
+                        items(messageData.size) { index ->
+                            if (messageData[index].senderType == "user") {
                                 UserChatItem(
-                                    messageData.value!!.message[index].message,
-                                    messageData.value!!.message[index].time
+                                    messageData[index].message,
+                                    messageData[index].time
                                 )
                             } else {
                                 AdminChatItem(
-                                    messageData.value!!.message[index].message,
-                                    messageData.value!!.message[index].time
+                                    messageData[index].message,
+                                    messageData[index].time
                                 )
                             }
+                        }
+                    }
+                    SideEffect {
+                        coroutine.launch {
+                            lazyColumnState.scrollToItem(messageData.size)
                         }
                     }
                 }
@@ -181,10 +179,7 @@ fun ViewChat(
                             25.dp,
                             ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
                             spotColor = AmozeshgamTheme.colors["shadowColor"]!!
-                        )
-                        .onGloballyPositioned {
-                            lazyColumnTopPadding.value = (it.size.height + 35).dp
-                        },
+                        ),
                     colors = CardDefaults.cardColors(
                         containerColor = AmozeshgamTheme.colors["background"]!!,
                     ),
@@ -235,8 +230,9 @@ fun ViewChat(
                             onClick = {
                                 if (message.value.isNotEmpty()) {
                                     viewModel.sendSupportMessage(message = message.value)
-                                }else{
-                                    Toast.makeText(context, "پیامی وجود ندارد", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "پیامی وجود ندارد", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                             },
                             containerColor = AmozeshgamTheme.colors["primary"]!!
@@ -256,37 +252,31 @@ fun ViewChat(
                     }
                 }
             }
-            DisposableEffect(view) {
-                val listener = ViewTreeObserver.OnGlobalLayoutListener {
-                    keyboardIsOpen.value =
-                        ViewCompat.getRootWindowInsets(view)
-                            ?.isVisible(WindowInsetsCompat.Type.ime()) != false
-                }
-                view.viewTreeObserver.addOnGlobalLayoutListener(listener)
-                onDispose {
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
-                }
-            }
+
             LaunchedEffect(messageSenderState.value) {
                 when (messageSenderState.value) {
                     RemoteStateHandler.OK -> {
-                        messageData.value!!.message.add(
-                            ApiResponseGetMessagesData(
-                                message = message.value,
-                                senderType = "user",
-                                time = viewModel.getTime()
-                            )
+                        val newMessage = ApiResponseGetMessagesData(
+                            message = message.value,
+                            senderType = "user",
+                            time = viewModel.getTime()
                         )
+                        messageData.add(newMessage)
                         message.value = ""
+                        coroutine.launch {
+                            lazyColumnState.animateScrollToItem(messageData.size)
+                        }
                         Toast.makeText(context, "پیام شما ارسال شد", Toast.LENGTH_SHORT).show()
                     }
 
-                    RemoteStateHandler.BADRESPONSE -> {
+                    RemoteStateHandler.BAD_RESPONSE -> {
                         Toast.makeText(context, "خطا در ارسال پیام", Toast.LENGTH_SHORT).show()
                     }
 
                     else -> Unit
                 }
+
+
             }
         }
     }

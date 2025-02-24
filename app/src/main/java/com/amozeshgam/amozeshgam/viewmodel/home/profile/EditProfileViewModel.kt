@@ -14,7 +14,7 @@ import com.amozeshgam.amozeshgam.BuildConfig
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestUpdateUser
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.ErrorHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.SecurityHandler
@@ -35,7 +35,7 @@ class EditProfileViewModel @Inject constructor() : ViewModel() {
     lateinit var context: Context
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
@@ -46,7 +46,7 @@ class EditProfileViewModel @Inject constructor() : ViewModel() {
 
     @Inject
     lateinit var errorHandler: ErrorHandler
-    private val _emailCredentialResult = MutableLiveData(RemoteStateHandler.WAITING)
+    private val _emailCredentialResult = MutableLiveData<RemoteStateHandler>()
     val emailCredentialResult: LiveData<RemoteStateHandler> = _emailCredentialResult
     private val _avatarUploaded = MutableLiveData(RemoteStateHandler.WAITING)
     val avatarUploaded: LiveData<RemoteStateHandler> = _avatarUploaded
@@ -54,13 +54,14 @@ class EditProfileViewModel @Inject constructor() : ViewModel() {
     val updateUser: LiveData<RemoteStateHandler> = _updatedUser
 
     fun requestForLoginWithEmail() {
+        _emailCredentialResult.value = RemoteStateHandler.LOADING
         val md = MessageDigest.getInstance("SHA-256")
         val hashNonce = md.digest(UUID.randomUUID().toString().toByteArray())
             .fold("") { str, it -> str + "%02x".format(it) }
         val credentialManager = CredentialManager.create(context)
         val googleIdOptions = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(BuildConfig.GoogleCredentials)
+            .setServerClientId(BuildConfig.GOOGLE_CREDENTIALS)
             .setNonce(hashNonce)
             .build()
         val requestCredential = GetCredentialRequest.Builder()

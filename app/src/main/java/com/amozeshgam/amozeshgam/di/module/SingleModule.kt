@@ -8,9 +8,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.media3.exoplayer.ExoPlayer
 import com.amozeshgam.amozeshgam.data.api.AmozeshgamApiInterface
+import com.amozeshgam.amozeshgam.data.api.BlackHoleApiInterface
 import com.amozeshgam.amozeshgam.data.api.DaneshjooyarApiInterface
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
+import com.amozeshgam.amozeshgam.di.qualifier.BlackHoleApi
 import com.amozeshgam.amozeshgam.di.qualifier.DaneshjooyarApi
 import com.amozeshgam.amozeshgam.handler.SecurityHandler
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -90,6 +92,17 @@ class SingleModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(DaneshjooyarApiInterface::class.java)
+    }
+
+    @BlackHoleApi
+    @Provides
+    @Singleton
+    fun provideBlackHoleRetrofit(): BlackHoleApiInterface {
+        return Retrofit.Builder()
+            .baseUrl("https://blackhole.amozeshgam.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BlackHoleApiInterface::class.java)
     }
 
     @Singleton

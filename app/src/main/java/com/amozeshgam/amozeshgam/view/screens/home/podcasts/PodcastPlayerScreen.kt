@@ -2,6 +2,7 @@ package com.amozeshgam.amozeshgam.view.screens.home.podcasts
 
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -415,6 +416,9 @@ fun ViewPodcastPlayer(
                     )
                 }
             }
+        }
+        BackHandler {
+            viewModel.clear()
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.amozeshgam.amozeshgam.view.screens.home
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -47,13 +44,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseHomeData
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
-import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.items.CourseItem
 import com.amozeshgam.amozeshgam.view.items.FieldAndSubFieldItem
@@ -71,8 +66,8 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
     val homeData = remember {
         mutableStateOf<ApiResponseHomeData?>(null)
     }
-    val lifecycle = LocalLifecycleOwner.current
-    val context = LocalContext.current
+
+
     UiHandler.ContentWithLoading(loading = loading.value, worker = {
         homeData.value = viewModel.getHomeData().await()
         loading.value = false
@@ -95,7 +90,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     }) { index ->
                         StoryItem(
                             text = homeData.value!!.storyBanner[index].title, onClick = {
-                                navController.navigate("${NavigationHandler.StoryScreen.route}/${homeData.value!!.storyBanner[index].id}")
+                                navController.navigate("${NavigationScreenHandler.StoryScreen.route}/${homeData.value!!.storyBanner[index].id}")
                             }, imageUrl = homeData.value!!.storyBanner[index].media
                         )
                     }
@@ -108,7 +103,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                         .padding(10.dp)
                         .aspectRatio(2.79f / 1f)
                         .clickable {
-                            navController.navigate(NavigationHandler.JobsScreen.route)
+                            navController.navigate(NavigationScreenHandler.GuidancePurchaseScreen.route)
                         }, model = homeData.value!!.banners[0].image, contentDescription = null
                 )
             }
@@ -146,7 +141,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                             imageUrl = homeData.value!!.fields[index].image,
                             text = homeData.value!!.fields[index].title
                         ) {
-                            navController.navigate(NavigationHandler.FieldScreen.route + "/" + homeData.value!!.fields[index].id)
+                            navController.navigate(NavigationScreenHandler.FieldScreen.route + "/" + homeData.value!!.fields[index].id)
                         }
                     }
                 }
@@ -207,7 +202,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 UiHandler.AnythingRow(modifier = Modifier.clickable {
-                    navController.navigate(NavigationHandler.AllCoursesScreen.route)
+                    navController.navigate(NavigationScreenHandler.AllCoursesScreen.route)
                 }, itemOne = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_left),
@@ -243,7 +238,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                             time = homeData.value!!.courses[index].time,
                             teacher = homeData.value!!.courses[index].teacher,
                             onClick = {
-                                navController.navigate("${NavigationHandler.SingleCourseScreen.route}/${homeData.value!!.courses[index].id}")
+                                navController.navigate("${NavigationScreenHandler.SingleCourseScreen.route}/${homeData.value!!.courses[index].id}")
                             })
                     }
                 }
@@ -266,7 +261,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     .aspectRatio(2.79f / 1.25f)
                     .clip(RoundedCornerShape(10.dp))
                     .clickable {
-                        navController.navigate(NavigationHandler.InformationScreen.route)
+                        navController.navigate(NavigationScreenHandler.InformationScreen.route)
                     },
                 model = homeData.value!!.manager.image,
                 contentDescription = null,
@@ -280,7 +275,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 UiHandler.AnythingRow(modifier = Modifier.clickable {
-                    navController.navigate(NavigationHandler.AllPodcastScreen.route)
+                    navController.navigate(NavigationScreenHandler.AllPodcastScreen.route)
                 }, itemOne = {
                     Icon(
                         contentDescription = null,
@@ -315,7 +310,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     }) { index ->
                         PodcastItem(
                             onClick = {
-                                navController.navigate("${NavigationHandler.PodcastPlayerScreen.route}/${homeData.value!!.podcasts[index].id}")
+                                navController.navigate("${NavigationScreenHandler.PodcastPlayerScreen.route}/${homeData.value!!.podcasts[index].id}")
                             },
                             imageUrl = homeData.value!!.podcasts[index].image,
                             text = homeData.value!!.podcasts[index].title,
@@ -360,27 +355,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     }
                 }
             }
-            LaunchedEffect(Unit) {
-                viewModel.checkHash()
-                viewModel.hashIsValid.observe(lifecycle) {
-                    when (it) {
-                        RemoteStateHandler.BADRESPONSE -> {
-                            viewModel.logOut()
-                            navController.navigate(NavigationHandler.LoginOneScreen.route){
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            Toast.makeText(
-                                context,
-                                "شما از این حساب اخراج شدید",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
 
-                        else -> Unit
-                    }
-                }
-            }
         }
     }
 }

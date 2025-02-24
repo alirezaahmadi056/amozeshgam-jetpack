@@ -4,22 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.amozeshgam.amozeshgam.handler.BatteryStateHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BroadCastBattery @Inject constructor() : BroadcastReceiver() {
-    private val _batteryState = MutableLiveData<BatteryStateHandler>()
-    val batteryState: LiveData<BatteryStateHandler> = _batteryState
-    override fun onReceive(context: Context?, intent: Intent?)  {
-        val batteryLevel = (intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)!! * 100)
-        when (batteryLevel) {
-            in 5..20 -> _batteryState.value = BatteryStateHandler.HIGHLEVEL
-            in 21..70 -> _batteryState.value = BatteryStateHandler.MIDLEVEL
-            in 71..100 -> _batteryState.value = BatteryStateHandler.LOWLEVEL
-        }
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val batteryLevel = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) ?: 0
+        GlobalUiModel.requestForEnabledDarkMode.value = batteryLevel in 0..20
     }
 }

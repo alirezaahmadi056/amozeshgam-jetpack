@@ -39,7 +39,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetStory
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.StoryViewModel
@@ -167,7 +167,7 @@ fun ViewStory(navController: NavController, viewModel: StoryViewModel = hiltView
             }
             LaunchedEffect(sliderTime.floatValue) {
                 if (sliderTime.floatValue <= 0f) {
-                    navController.navigate(NavigationHandler.HomeScreen.route)
+                    navController.navigate(NavigationScreenHandler.HomeScreen.route)
                 }
             }
             LaunchedEffect(Unit) {

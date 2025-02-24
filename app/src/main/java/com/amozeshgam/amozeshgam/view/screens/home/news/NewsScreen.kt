@@ -10,13 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseExplorer
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.news.NewsViewModel
@@ -29,7 +28,6 @@ fun ViewNews(navController: NavController, viewModel: NewsViewModel = hiltViewMo
     val newsData = remember {
         mutableStateOf<ApiResponseExplorer?>(null)
     }
-    val context = LocalContext.current
     UiHandler.ContentWithLoading(
         ifForShowContent = newsData.value != null,
         loading = isLoading.value,
@@ -48,7 +46,7 @@ fun ViewNews(navController: NavController, viewModel: NewsViewModel = hiltViewMo
                     if (index % 6 == 0 && newsData.value!!.data[index].important) {
                         AsyncImage(modifier = Modifier
                             .clickable {
-                                navController.navigate("${NavigationHandler.SingleNewsScreen.route}/${newsData.value!!.data[index].id}")
+                                navController.navigate("${NavigationScreenHandler.SingleNewsScreen.route}/${newsData.value!!.data[index].id}")
                             }
                             .height(300.dp),
                             model = newsData.value!!.data[index].media,
@@ -58,8 +56,7 @@ fun ViewNews(navController: NavController, viewModel: NewsViewModel = hiltViewMo
                     } else {
                         AsyncImage(modifier = Modifier
                             .clickable {
-                                navController.navigate("${NavigationHandler.SingleNewsScreen.route}/${newsData.value!!.data[index].id}")
-
+                                navController.navigate("${NavigationScreenHandler.SingleNewsScreen.route}/${newsData.value!!.data[index].id}")
                             }
                             .height(150.dp),
                             model = newsData.value!!.data[index].media,

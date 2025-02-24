@@ -112,6 +112,9 @@ fun ViewEditProfile(
     }
     val lifecycle = LocalLifecycleOwner.current
     val registerActivityForResult = LocalActivityResultRegistryOwner.current
+    val emailCredentialLoading = remember {
+        mutableStateOf(false)
+    }
     AmozeshgamTheme {
         UiHandler.ContentWithScaffold(
             title = "ویرایش اطلاعات کاربری",
@@ -302,16 +305,23 @@ fun ViewEditProfile(
                             containerColor = AmozeshgamTheme.colors["background"]!!
                         )
                     ) {
-                        Text(
-                            "اضافه کردن اضافه کردن حساب گوگل",
-                            fontFamily = AmozeshgamTheme.fonts["regular"],
-                            color = AmozeshgamTheme.colors["textColor"]!!
-                        )
-                        Image(
-                            modifier = Modifier.padding(5.dp),
-                            painter = painterResource(R.drawable.ic_google),
-                            contentDescription = null
-                        )
+                        if (emailCredentialLoading.value){
+                            CircularProgressIndicator(
+                                color = AmozeshgamTheme.colors["primary"]!!,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }else{
+                            Text(
+                                "اضافه کردن اضافه کردن حساب گوگل",
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
+                                color = AmozeshgamTheme.colors["textColor"]!!
+                            )
+                            Image(
+                                modifier = Modifier.padding(5.dp),
+                                painter = painterResource(R.drawable.ic_google),
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
                 AnimatedVisibility(visible = name.value != navName || email.value != navEmail || date.value != navDate) {
@@ -359,11 +369,7 @@ fun ViewEditProfile(
                 })
             }
         }
-        if (showVerificationEmailDialog.value) {
-            UiHandler.CustomDialog {
 
-            }
-        }
         if (showErrorDialog.value) {
             UiHandler.ErrorDialog(
                 imageId = R.drawable.ic_network_error,
@@ -421,11 +427,17 @@ fun ViewEditProfile(
                 when (it) {
                     RemoteStateHandler.OK -> {
                         Toast.makeText(context, "با موفقیت ثبت شد", Toast.LENGTH_SHORT).show()
+                        emailCredentialLoading.value = false
                         navController.popBackStack()
+                    }
+
+                    RemoteStateHandler.LOADING -> {
+                        emailCredentialLoading.value = true
                     }
 
                     else -> {
                         Toast.makeText(context, "خطا در ثبت ایمیل", Toast.LENGTH_SHORT).show()
+                        emailCredentialLoading.value = false
                     }
                 }
             }

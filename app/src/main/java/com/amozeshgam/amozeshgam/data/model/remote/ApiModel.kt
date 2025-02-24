@@ -18,9 +18,6 @@ data class ApiRequestCheckCode(
 data class ApiResponseGetFields(
     @SerializedName("intro") val intro: String,
     @SerializedName("fields") val field: ArrayList<ApiResponseGetFieldsData>,
-    @SerializedName("price") val price: Int,
-    @SerializedName("percent") val percent: Int,
-    @SerializedName("total") val total: Int,
 )
 
 data class ApiResponseGetFieldsData(
@@ -34,6 +31,32 @@ data class ApiResponseCheckCode(
     @SerializedName("id") val usernameId: Int,
     @SerializedName("hash_login") val hash: String,
     @SerializedName("public_key") val publicKey: String,
+)
+
+data class ApiResponseGetFieldPackage(
+    @SerializedName("intro")
+    val intro: String,
+    @SerializedName("description")
+    val description: String,
+    @SerializedName("fields")
+    val fields: ArrayList<ApiResponseGetFieldPackageData>,
+    @SerializedName("price")
+    val price: Int,
+    @SerializedName("percent")
+    val percent: Int,
+    @SerializedName("total")
+    val total: Int,
+    @SerializedName("is_buy")
+    val isBuy: Boolean
+)
+
+data class ApiResponseGetFieldPackageData(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("image")
+    val image: String,
 )
 
 data class ApiResponseHomeData(
@@ -115,18 +138,38 @@ data class ApiResponseSingleFieldRequirement(
 )
 
 data class ApiResponseSingleSubField(
-    @SerializedName("videos") val videos: ArrayList<ApiResponseVideo>,
-    @SerializedName("video") val video: String,
-    @SerializedName("subfield") val subFieldData: ApiResponseSingleSubFieldData,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("price")
+    val price: Int,
+    @SerializedName("total")
+    val total: Int,
+    @SerializedName("features")
+    val features: ArrayList<String>,
+    @SerializedName("futures")
+    val futures: ArrayList<ApiResponseSingleSubFieldFuturesAndSoftwareData>,
+    @SerializedName("software")
+    val software: ArrayList<ApiResponseSingleSubFieldFuturesAndSoftwareData>,
+    @SerializedName("banner")
+    val banner: ApiResponseSingleSubFieldBannerData
 )
 
-data class ApiResponseSingleSubFieldData(
-    @SerializedName("description") val description: String,
-    @SerializedName("price") val price: String,
-    @SerializedName("time") val time: String,
-    @SerializedName("title") val title: String,
-    @SerializedName("image") val image: String,
+data class ApiResponseSingleSubFieldBannerData(
+    @SerializedName("banner")
+    val banner: String,
+    @SerializedName("link")
+    val link: String
 )
+
+data class ApiResponseSingleSubFieldFuturesAndSoftwareData(
+    @SerializedName("text")
+    val text: String,
+    @SerializedName("image")
+    val image: String
+)
+
 
 data class ApiResponseSinglePageSubFields(
     @SerializedName("id") val id: Int,
@@ -159,6 +202,36 @@ data class ApiResponseGetSupportMessages(
     val messages: ArrayList<ApiResponseGetSupportMessageData>,
 )
 
+data class ApiResponseGetSingleGuidField(
+    @SerializedName("video")
+    val video: String,
+    @SerializedName("subfields")
+    val subFields: ArrayList<ApiResponseGetSingleGuidFieldSubFieldData>,
+    @SerializedName("manager")
+    val manager: String,
+    @SerializedName("requirement")
+    val requirement: ApiResponseGetSingleGuidFieldRequirement
+
+)
+
+data class ApiResponseGetSingleGuidFieldRequirement(
+    @SerializedName("description")
+    val description: String,
+    @SerializedName("time")
+    val time: String,
+    @SerializedName("sessions")
+    val sessions: Int
+)
+
+data class ApiResponseGetSingleGuidFieldSubFieldData(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("image")
+    val image: String
+)
+
 data class ApiResponseGetSupportMessageData(
     @SerializedName("message")
     val message: String,
@@ -183,20 +256,6 @@ data class ApiRequestSetName(
     @SerializedName("phone") val phone: String,
     @SerializedName("hash_login") val hash: String,
     @SerializedName("name") val name: String,
-)
-
-
-data class ApiResponseAADS(
-    @SerializedName("fields") val fields: ArrayList<ApiResponseAADSFields>,
-    @SerializedName("adv") val adv: ArrayList<ApiResponseVideo>,
-    @SerializedName("disadv") val disadv: ArrayList<ApiResponseVideo>,
-)
-
-data class ApiResponseAADSFields(
-    @SerializedName("id") val id: Int,
-    @SerializedName("title") val title: String,
-    @SerializedName("image") val image: String,
-    @SerializedName("link") val link: String,
 )
 
 data class ApiResponseGetMyFavorites(
@@ -385,8 +444,8 @@ data class ApiRequestUpdateUser(
 )
 
 data class ApiResponseCart(
-    @SerializedName("courses") val courses: ArrayList<ApiResponseCartCoursesAndRoadMapData>,
-    @SerializedName("roadmaps") val roadMaps: ArrayList<ApiResponseCartCoursesAndRoadMapData>,
+    @SerializedName("courses") val courses: List<ApiResponseCartCoursesAndRoadMapData>,
+    @SerializedName("roadmaps") val roadMaps: List<ApiResponseCartCoursesAndRoadMapData>,
     @SerializedName("final_price") val finalPrice: Int,
 )
 
@@ -432,7 +491,7 @@ data class ApiRequestIdAndUserId(
 )
 
 data class ApiResponseGetDevices(
-    @SerializedName("devices") val devices: ArrayList<ApiResponseGetDevicesData>,
+    @SerializedName("devices") val devices: List<ApiResponseGetDevicesData>,
 )
 
 data class ApiResponseGetDevicesData(
@@ -453,14 +512,13 @@ data class ApiResponseDiscount(
 data class ApiResponseGetRoadMap(
     @SerializedName("title") val title: String,
     @SerializedName("image") val image: String,
-    @SerializedName("link") val link: String,
     @SerializedName("levels") val level: ArrayList<ApiResponseGetRoadMapLevels>,
 
     )
 
 data class ApiResponseGetRoadMapLevels(
     @SerializedName("title") val title: String,
-    @SerializedName("progress_percent") val progress: Int,
+    @SerializedName("percent") val progress: Int,
     @SerializedName("tutorial") val tutorial: ArrayList<ApiResponseGetRoadMapTutorialData>,
     @SerializedName("exam") val exam: ArrayList<ApiResponseGetRoadMapExamData>,
 )
@@ -498,9 +556,14 @@ data class ApiResponseMyCourses(
 )
 
 data class ApiResponseTitleAndImage(
-    @SerializedName("title") val title: String,
-    @SerializedName("image") val image: String,
-    @SerializedName("percent") val percent: String,
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("percent")
+    val percent: String,
 )
 
 data class ApiRequestCreateComment(
@@ -514,16 +577,6 @@ data class ApiResponseCheckVersion(
     @SerializedName("version") val version: Int,
 )
 
-data class ApiRequestVerificationEmail(
-    @SerializedName("id") val id: Int,
-    @SerializedName("email") val email: String,
-)
-
-data class ApiRequestCheckVerificationEmail(
-    @SerializedName("id") val id: Int,
-    @SerializedName("email") val email: String,
-    @SerializedName("code") val code: Int,
-)
 
 data class ApiResponseAiQuestion(
     @SerializedName("questions") val questions: ArrayList<ApiResponseAiQuestionData>,
@@ -542,19 +595,23 @@ data class ApiRequestRegister(
     @SerializedName("subject") val subject: String,
 )
 
-data class ApiRequestUserIdAndDeviceId(
-    @SerializedName("user_id") val userId: Int,
-    @SerializedName("device_id") val deviceId: String,
-)
-
 data class ApiResponseGetMessages(
-    @SerializedName("messages") val message: ArrayList<ApiResponseGetMessagesData>,
+    @SerializedName("messages") val message: List<ApiResponseGetMessagesData>,
 )
 
 data class ApiResponseGetMessagesData(
-    @SerializedName("message") val message: String,
+    @SerializedName("message") var message: String,
     @SerializedName("sender_type") val senderType: String,
     @SerializedName("time") val time: String,
+)
+
+data class ApiRequestStartTutorial(
+    @SerializedName("send_type")
+    val senderType: String,
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("tutorial_id")
+    val tutorial: Int,
 )
 
 data class ApiResponseMyRoadMap(
@@ -622,4 +679,11 @@ data class ApiResponseAiPlanningQuestion(
 data class ApiRequestArrayString(
     @SerializedName("answers")
     val answers: ArrayList<String>,
+)
+
+data class ApiRequestAddUserDataToBlackHole(
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("data")
+    val data: String
 )

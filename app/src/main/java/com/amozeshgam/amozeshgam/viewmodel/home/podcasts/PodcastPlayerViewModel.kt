@@ -14,7 +14,7 @@ import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestAddPodcastToFavorite
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetPodcast
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.service.bound.PodcastPlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,7 +37,7 @@ class PodcastPlayerViewModel @Inject constructor(@ApplicationContext private val
     val readyForPlay: StateFlow<Boolean> = _readyForPlay
 
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput
@@ -126,10 +126,10 @@ class PodcastPlayerViewModel @Inject constructor(@ApplicationContext private val
     }
 
 
-    override fun onCleared() {
+    fun clear() {
         viewModelScope.launch {
+            binder?.releasePlayer()
             context.unbindService(serviceConnection)
         }
-        super.onCleared()
     }
 }

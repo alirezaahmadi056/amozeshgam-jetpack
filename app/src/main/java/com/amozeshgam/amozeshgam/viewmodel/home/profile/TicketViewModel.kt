@@ -1,7 +1,6 @@
 package com.amozeshgam.amozeshgam.viewmodel.home.profile
 
 import android.util.Log
-import androidx.compose.ui.util.fastCbrt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,20 +9,17 @@ import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestRegister
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetTicketSubjects
-import com.amozeshgam.amozeshgam.data.repository.HomeActivityRepository
+import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.http.Body
 import javax.inject.Inject
 
 @HiltViewModel
 class TicketViewModel @Inject constructor() : ViewModel() {
     @Inject
-    lateinit var repository: HomeActivityRepository
+    lateinit var repository: HomeClusterRepository
 
     @Inject
     lateinit var dataBaseInputOutput: DataBaseInputOutput

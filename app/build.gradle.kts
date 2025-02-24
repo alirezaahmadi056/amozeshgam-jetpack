@@ -27,13 +27,14 @@ android {
         }
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "APIKEY", "\"${properties.getProperty("APIKEY")}\"")
+        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         buildConfigField(
             "String",
-            "GoogleCredentials",
-            "\"${properties.getProperty("GoogleCredentials")}\""
+            "GOOGLE_CREDENTIALS",
+            "\"${properties.getProperty("GOOGLE_CREDENTIALS")}\""
         )
-        buildConfigField("String", "CIPHERKEY", "\"${properties.getProperty("CIPHERKEY")}\"")
+        buildConfigField("String", "BLACK_HOLE_API_KEY", "\"${properties.getProperty("BLACK_HOLE_API_KEY")}\"")
+        buildConfigField("String", "CIPHER_KEY", "\"${properties.getProperty("CIPHER_KEY")}\"")
 
     }
     signingConfigs {
@@ -86,6 +87,8 @@ android {
 }
 
 dependencies {
+    implementation("com.securevale:rasp-android:0.6.0")
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.biometric.ktx)
     implementation(libs.androidx.credentials.play.services.auth)
@@ -99,7 +102,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.paho.mqtt.android)
     implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.talsecsecurity.community)
     implementation(libs.hilt.android)
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.navigation.compose)

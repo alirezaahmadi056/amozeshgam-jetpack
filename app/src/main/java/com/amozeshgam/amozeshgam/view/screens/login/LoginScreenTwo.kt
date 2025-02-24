@@ -64,10 +64,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.amozeshgam.amozeshgam.R
-import com.amozeshgam.amozeshgam.handler.NavigationHandler
+import com.amozeshgam.amozeshgam.handler.NavigationClusterHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.handler.ValidatingStateHandler
-import com.amozeshgam.amozeshgam.view.HomeActivity
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.login.LoginViewModel
 import kotlinx.coroutines.delay
@@ -346,10 +346,13 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                     when (it.first) {
                         ValidatingStateHandler.VALID -> {
                             if (!it.second) {
-                                navController.navigate(NavigationHandler.LoginThreeScreen.route)
+                                navController.navigate(NavigationScreenHandler.LoginScreenThree.route)
                             } else {
-                                context.startActivity(Intent(context, HomeActivity::class.java))
-                                viewModel.finishActivity()
+                                navController.navigate(NavigationClusterHandler.Home.route){
+                                    popUpTo(NavigationScreenHandler.LoginScreenTwo.route) {
+                                        inclusive = false
+                                    }
+                                }
                             }
                         }
 
@@ -366,7 +369,7 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                 }
             }
             LaunchedEffect(Unit) {
-                viewModel.startBrodCastReceiverAndGetCode(code)
+                viewModel.getLoginCodeFromBroadCast(code)
             }
         }
         UiHandler.KeyboardIsOpened(keyboardOpened = keyboardOpened)

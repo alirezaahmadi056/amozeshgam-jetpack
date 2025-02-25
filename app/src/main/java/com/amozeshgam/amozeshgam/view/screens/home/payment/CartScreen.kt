@@ -214,7 +214,7 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                         modifier = Modifier
                             .padding(horizontal = 40.dp)
                             .aspectRatio(0.5f / 0.5f),
-                        painter = painterResource(R.drawable.ic_empty_cart),
+                        painter = painterResource(R.drawable.ic_empty_transaction),
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds
                     )

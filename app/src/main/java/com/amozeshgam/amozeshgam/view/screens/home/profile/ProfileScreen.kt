@@ -61,9 +61,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
         mutableStateOf(false)
     }
     val enabledNotification = viewModel.enabledAmozeshgamNotification.collectAsState()
-    val enabledKeyboard = remember {
-        mutableStateOf(false)
-    }
+
     val userData = remember {
         mutableStateOf<ApiResponseGetProfile?>(null)
     }
@@ -397,7 +395,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                     UiHandler.WalletChargeBottomSheet(
                         modifier = Modifier.align(Alignment.BottomCenter),
                         onDismissRequest = { showWalletCharge.value = false },
-                        suggestionList = arrayOf(10000, 200000, 232323)
+                        suggestionList = arrayOf(100000,200000,300000,400000,500000,600000,700000,800000,900000,1000000)
                     ) {
 
                     }

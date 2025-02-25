@@ -138,6 +138,8 @@ fun ViewPodcastPlayer(
                 podcastData.value?.voice.toString(),
                 podcastData.value?.title.toString()
             )
+            title.value = podcastData.value?.title.toString()
+            speech.value = podcastData.value?.speaker.toString()
             liked.value = podcastData.value?.isLike ?: false
             isLoading.value = false
             showErrorDialog.value = podcastData.value == null

@@ -96,6 +96,7 @@ fun StoryItem(onClick: () -> Unit, imageUrl: String, text: String = "") {
             color = AmozeshgamTheme.colors["textColor"]!!,
             fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
             maxLines = 2,
+            fontSize = 13.sp,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
         )
@@ -151,7 +152,7 @@ fun FieldAndSubFieldItem(
         modifier = modifier
             .size(180.dp)
             .shadow(
-                elevation = 12.dp,
+                elevation = 10.dp,
                 shape = RoundedCornerShape(10.dp),
                 ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
                 spotColor = AmozeshgamTheme.colors["shadowColor"]!!

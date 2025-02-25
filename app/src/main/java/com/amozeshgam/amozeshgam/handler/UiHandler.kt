@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.BlurMaskFilter
 import android.icu.text.DecimalFormat
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -20,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -122,6 +124,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import androidx.core.app.PictureInPictureModeChangedInfo
+import androidx.core.text.isDigitsOnly
 import androidx.core.util.Consumer
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -465,7 +468,7 @@ object UiHandler {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
-                    modifier = Modifier.padding(10.dp),
+                    modifier = Modifier.padding(12.dp),
                     painter = painterResource(id = imageId),
                     contentDescription = null
                 )
@@ -633,6 +636,7 @@ object UiHandler {
         val text = remember {
             mutableStateOf("")
         }
+        val context = LocalContext.current
         ModalBottomSheet(
             modifier = modifier
                 .fillMaxWidth()
@@ -664,7 +668,8 @@ object UiHandler {
                 Row(
                     modifier = Modifier
                         .padding(10.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -697,7 +702,7 @@ object UiHandler {
                         .fillMaxWidth(),
                     label = {
                         Text(
-                            text = "بر حسب تومان",
+                            text = "وارد کردن مبلغ دلخواه",
                         )
                     },
                     value = text.value,
@@ -711,7 +716,13 @@ object UiHandler {
                         .padding(10.dp)
                         .fillMaxWidth()
                         .height(60.dp),
-                    onClick = {},
+                    onClick = {
+                        if (text.value.isDigitsOnly()) {
+                            onChargeButtonClick(text.value.toInt())
+                        } else {
+                            Toast.makeText(context, "مبلغ نامعتبر", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = AmozeshgamTheme.colors["primary"]!!)
                 ) {
@@ -1095,7 +1106,6 @@ object UiHandler {
         val dontShowGetPermissionDialogAgain = remember {
             mutableStateOf(false)
         }
-        val lifecycle = LocalLifecycleOwner.current
         AmozeshgamTheme(
             darkTheme = UiHandler.themeState()
         ) {
@@ -1282,35 +1292,75 @@ object UiHandler {
                                 modifier = Modifier
                                     .padding(10.dp)
                                     .fillMaxWidth()
+                                    .align(Alignment.TopEnd),
+                                horizontalAlignment = Alignment.End
                             ) {
-                                Text(
+                                UiHandler.AnythingRow(
                                     modifier = Modifier
                                         .padding(vertical = 5.dp)
-                                        .fillMaxWidth()
                                         .clickable {
                                             showMenuItem.value = false
                                             navController.navigate(NavigationScreenHandler.TicketScreen.route)
                                         },
-                                    text = "پشتیبانی",
-                                    textAlign = TextAlign.Right,
-                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                    itemOne = {
+                                        Text(
+                                            text = "پشتیبانی",
+                                            textAlign = TextAlign.Right,
+                                            color = AmozeshgamTheme.colors["textColor"]!!,
+                                            fontSize = 15.sp,
+                                            fontFamily = AmozeshgamTheme.fonts["bold"]
+                                        )
+                                    },
+                                    itemTwo = {
+                                        Image(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .padding(2.dp),
+                                            painter = painterResource(R.drawable.ic_support),
+                                            contentDescription = null
+                                        )
+                                    }
                                 )
-                                Text(
+                                HorizontalDivider(
                                     modifier = Modifier
-                                        .padding(vertical = 5.dp)
-                                        .fillMaxWidth()
+                                        .padding(5.dp)
+                                        .fillMaxWidth(),
+                                    thickness = 1.dp,
+                                    color = AmozeshgamTheme.colors["textColor"]!!.copy(alpha = 0.3f)
+                                )
+                                UiHandler.AnythingRow(
+                                    modifier = Modifier
                                         .clickable {
                                             showMenuItem.value = false
                                         },
-
-                                    text = "تماس با ما",
-                                    textAlign = TextAlign.Right,
-                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                    itemOne = {
+                                        Text(
+                                            text = "تماس با ما",
+                                            textAlign = TextAlign.Right,
+                                            color = AmozeshgamTheme.colors["textColor"]!!,
+                                            fontSize = 15.sp,
+                                            fontFamily = AmozeshgamTheme.fonts["bold"]
+                                        )
+                                    },
+                                    itemTwo = {
+                                        Image(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .padding(2.dp),
+                                            painter = painterResource(R.drawable.ic_contact_us),
+                                            contentDescription = null
+                                        )
+                                    }
                                 )
-                                Text(
+                                HorizontalDivider(
                                     modifier = Modifier
-                                        .padding(vertical = 5.dp)
-                                        .fillMaxWidth()
+                                        .padding(5.dp)
+                                        .fillMaxWidth(),
+                                    thickness = 1.dp,
+                                    color = AmozeshgamTheme.colors["textColor"]!!.copy(alpha = 0.3f)
+                                )
+                                UiHandler.AnythingRow(
+                                    modifier = Modifier
                                         .clickable {
                                             showMenuItem.value = false
                                             viewModel.logOut()
@@ -1320,11 +1370,27 @@ object UiHandler {
                                                 }
                                             }
                                         },
-                                    text = "خروج از حساب",
-                                    textAlign = TextAlign.Right,
-                                    color = AmozeshgamTheme.colors["textColor"]!!
+                                    itemOne = {
+                                        Text(
+                                            text = "خروج از حساب",
+                                            textAlign = TextAlign.Right,
+                                            color = AmozeshgamTheme.colors["textColor"]!!,
+                                            fontSize = 15.sp,
+                                            fontFamily = AmozeshgamTheme.fonts["bold"]
+                                        )
+                                    },
+                                    itemTwo = {
+                                        Image(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .padding(2.dp),
+                                            painter = painterResource(R.drawable.ic_logout),
+                                            contentDescription = null
+                                        )
+                                    }
                                 )
                             }
+
                         }
                     }
                 }
@@ -1340,11 +1406,12 @@ object UiHandler {
                         },
                         imageId = AmozeshgamTheme.assets["amozeshgamBanner"]!!,
                         title = "دسترسی خواندن اعلانات",
-                        description = "برای بهتر شدن خدمات ارايه شده توسط اموزشگام نیاز است که دسترسی خواندن اعلانات رو فعال کنید",
+                        description = "برای بهتر شدن خدمات ارايه شده توسط آموزشگام نیاز است که دسترسی خواندن اعلانات را فعال کنید",
                         buttons = {
                             TextButton(
                                 modifier = Modifier.padding(5.dp),
                                 onClick = {
+                                    showRecipientNotificationDialog.value = false
                                     context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
                                 },
                                 shape = RoundedCornerShape(10.dp),
@@ -1380,6 +1447,10 @@ object UiHandler {
                     )
                 }
                 if (GlobalUiModel.errorExceptionDialog.value) {
+                    Log.i(
+                        "jjj",
+                        "HomeScaffoldPattern: ${GlobalUiModel.errorExceptionMessage.value}"
+                    )
                     UiHandler.ErrorDialog(
                         imageId = R.drawable.ic_error,
                         text = ".برنامه با خطا مواجه شده است"
@@ -1416,7 +1487,7 @@ object UiHandler {
                     UiHandler.AlertDialog(
                         imageId = R.drawable.ic_error,
                         title = "خطای امنیتی",
-                        description = "شما نمی توانید هنگام کار با اپلیکیشن آموزشگام دستگاه خارجی را به گوشی خود وصل کنید لطفا آن رو قطع کنید"
+                        description = "شما نمی توانید هنگام کار با اپلیکیشن آموزشگام دستگاه خارجی را به گوشی خود وصل کنید لطفا آن را قطع کنید"
                     )
                 }
                 LaunchedEffect(GlobalUiModel.requestForEnabledDarkMode.value) {
@@ -1531,3 +1602,10 @@ fun Modifier.shadow(
         }
     }
 )
+
+fun Context.openLink(link: String) {
+    try {
+        this.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    } catch (_: Exception) {
+    }
+}

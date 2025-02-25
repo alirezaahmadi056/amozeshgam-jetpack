@@ -3,6 +3,7 @@ package com.amozeshgam.amozeshgam.view.screens.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -50,6 +52,7 @@ import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseHomeData
 import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
+import com.amozeshgam.amozeshgam.handler.openLink
 import com.amozeshgam.amozeshgam.view.items.CourseItem
 import com.amozeshgam.amozeshgam.view.items.FieldAndSubFieldItem
 import com.amozeshgam.amozeshgam.view.items.PaymentItem
@@ -66,8 +69,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
     val homeData = remember {
         mutableStateOf<ApiResponseHomeData?>(null)
     }
-
-
+    val context = LocalContext.current
     UiHandler.ContentWithLoading(loading = loading.value, worker = {
         homeData.value = viewModel.getHomeData().await()
         loading.value = false
@@ -189,8 +191,11 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                 AsyncImage(
                     modifier = Modifier
                         .padding(10.dp)
-                        .aspectRatio(2.79f / 1f),
-                    model = homeData.value!!.banners[0].image,
+                        .aspectRatio(2.79f / 1f)
+                        .clickable {
+                            context.openLink(homeData.value!!.banners[1].link   )
+                        },
+                    model = homeData.value!!.banners[1].image,
                     contentDescription = null
                 )
             }
@@ -319,6 +324,26 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     }
                 }
             }
+            if (homeData.value?.banners?.getOrNull(2) != null) {
+                AsyncImage(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .aspectRatio(2.79f / 1f)
+                        .clickable {
+                            context.openLink(homeData.value!!.banners[2].link)
+                        }, model = homeData.value!!.banners[2].image, contentDescription = null
+                )
+            }
+            if (homeData.value?.banners?.getOrNull(3) != null) {
+                AsyncImage(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .aspectRatio(2.79f / 1f)
+                        .clickable {
+                            context.openLink(homeData.value!!.banners[3].link)
+                        }, model = homeData.value!!.banners[3].image, contentDescription = null
+                )
+            }
             Text(
                 modifier = Modifier
                     .align(Alignment.End)
@@ -332,7 +357,10 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 10.dp, vertical = 0.dp),
+                    .padding(horizontal = 10.dp, vertical = 0.dp)
+                    .horizontalScroll(
+                        rememberScrollState()
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -342,6 +370,9 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                             .width(180.dp)
                             .height(70.dp)
                             .padding(5.dp),
+                        onClick = {
+                            context.openLink(homeData.value!!.socials[index].link)
+                        },
                         colors = CardDefaults.cardColors(containerColor = AmozeshgamTheme.colors["background"]!!)
                     ) {
                         AsyncImage(

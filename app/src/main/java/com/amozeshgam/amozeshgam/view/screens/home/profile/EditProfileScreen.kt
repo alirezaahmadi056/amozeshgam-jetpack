@@ -92,9 +92,7 @@ fun ViewEditProfile(
     val date = remember {
         mutableStateOf("")
     }
-    val showVerificationEmailDialog = remember {
-        mutableStateOf(false)
-    }
+
     val showErrorDialog = remember {
         mutableStateOf(false)
     }

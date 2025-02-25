@@ -2,6 +2,7 @@ package com.amozeshgam.amozeshgam.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
 import com.amozeshgam.amozeshgam.handler.NavigationClusterHandler
 import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
@@ -62,25 +64,33 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
+    private var startDestination: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel.startBroadCast()
-        if (intent.action == Intent.ACTION_SEND && intent.type == "plain/text") {
+        if (intent.action == Intent.ACTION_SEND) {
             intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
                 viewModel.handleTextProvider(it)
             }
 
         }
+        if (intent.action == Intent.ACTION_VIEW) {
+            startDestination = intent.data.toString()
+        }
         setContent {
-            ViewMainContent()
+            ViewMainContent(startDestination = startDestination)
         }
     }
 }
 
 @Composable
-fun ViewMainContent() {
+fun ViewMainContent(startDestination: String?) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "splash") {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination ?: NavigationClusterHandler.Splash.route
+    ) {
         navigation(
             route = NavigationClusterHandler.Splash.route,
             startDestination = NavigationScreenHandler.SplashScreen.route,
@@ -372,8 +382,9 @@ fun ViewMainContent() {
                     ViewField(navController = it)
                 }
             }
-            composable(route = NavigationScreenHandler.GuidancePurchaseScreen.route,
-                ) {
+            composable(
+                route = NavigationScreenHandler.GuidancePurchaseScreen.route,
+            ) {
                 UiHandler.HomeScaffoldPattern(
                     navController = navController,
                     showDefaultBottomBar = false

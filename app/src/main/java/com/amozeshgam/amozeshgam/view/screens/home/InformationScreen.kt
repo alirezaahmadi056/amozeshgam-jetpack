@@ -21,13 +21,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Composition
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -35,6 +39,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
@@ -134,21 +139,21 @@ fun ViewInformation(
                     )
                 }
                 item {
-                     InformationItem(
+                    InformationItem(
                         image = R.drawable.ic_student_count,
                         text = "تعداد دانشجو",
                         title = "${informationData.value!!.data.studentCount} نفر "
                     )
                 }
                 item {
-                   InformationItem(
+                    InformationItem(
                         image = R.drawable.ic_clock,
                         text = "ساعت آموزش",
                         title = "${informationData.value!!.data.totalTeachDuration} ساعت"
                     )
                 }
                 item {
-                     InformationItem(
+                    InformationItem(
                         image = R.drawable.ic_clock,
                         text = "تعداد دوره ها",
                         title = "${informationData.value!!.data.courseCount} عدد "
@@ -165,17 +170,19 @@ fun ViewInformation(
                 textAlign = TextAlign.Right,
                 color = AmozeshgamTheme.colors["textColor"]!!
             )
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(10.dp)
-            ) {
-                items(informationData.value!!.data.courses.size) { index ->
-                    InformationPackageItem(
-                        image = informationData.value!!.data.courses[index].thumbnail,
-                        name = informationData.value!!.data.courses[index].title
-                    )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(10.dp)
+                ) {
+                    items(informationData.value!!.data.courses.size) { index ->
+                        InformationPackageItem(
+                            image = informationData.value!!.data.courses[index].thumbnail,
+                            name = informationData.value!!.data.courses[index].title
+                        )
+                    }
                 }
             }
             Text(

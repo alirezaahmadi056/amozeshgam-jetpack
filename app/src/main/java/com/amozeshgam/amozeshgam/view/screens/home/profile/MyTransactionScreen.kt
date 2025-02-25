@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetMyTransactions
 import com.amozeshgam.amozeshgam.handler.UiHandler
-import com.amozeshgam.amozeshgam.view.items.OrdersItem
 import com.amozeshgam.amozeshgam.view.items.TransactionItem
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.profile.MyTransactionViewModel
@@ -65,7 +64,7 @@ fun ViewMyTransaction(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.ic_empty_cart),
+                            painter = painterResource(R.drawable.ic_empty_transaction),
                             contentDescription = null
                         )
                         Text(text = "تراکنشی وجود ندارد.")

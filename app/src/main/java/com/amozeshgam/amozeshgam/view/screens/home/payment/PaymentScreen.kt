@@ -53,7 +53,7 @@ import com.amozeshgam.amozeshgam.viewmodel.home.payment.PaymentViewModel
 import java.text.DecimalFormat
 
 @Composable
-fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: NavController) {
+fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(), navController: NavController) {
     val finalPrice = remember {
         mutableStateOf("")
     }
@@ -128,7 +128,7 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                         Text(
                                             text = "${DecimalFormat(",000").format(paymentData.value!!.coursesPrice)}تومان",
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 19.sp
                                         )
                                     }
@@ -136,7 +136,7 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                         text = "هزینه دوره ها(${paymentData.value!!.courseCount})",
                                         color = AmozeshgamTheme.colors["textColor"]!!,
                                         fontSize = 19.sp,
-                                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                        fontFamily = AmozeshgamTheme.fonts["regular"]
                                     )
                                 }
                             }
@@ -152,14 +152,14 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                         Text(
                                             text = "${DecimalFormat(",000").format(paymentData.value!!.roadmapPrice)}تومان",
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 19.sp
                                         )
                                     }
                                     Text(
                                         text = "هزینه مسیرهای یادگیری(${paymentData.value!!.roadmapCount})",
                                         color = AmozeshgamTheme.colors["textColor"]!!,
-                                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
                                         fontSize = 19.sp
                                     )
                                 }
@@ -176,14 +176,14 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                         Text(
                                             text = "${DecimalFormat(",000").format(discount.intValue)}تومان",
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 19.sp
                                         )
                                     }
                                     Text(
                                         text = "مجموع تخفیف ها",
                                         color = AmozeshgamTheme.colors["errorColor"]!!,
-                                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
                                         fontSize = 19.sp
                                     )
                                 }
@@ -304,7 +304,7 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                     ) {
                                         Text(
                                             text = "پرداخت انلاین",
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 17.sp,
                                             color = AmozeshgamTheme.colors["textColor"]!!
                                         )
@@ -351,7 +351,7 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                     ) {
                                         Text(
                                             text = "پرداخت با کیف پول آموزشگام",
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 17.sp,
                                             color = AmozeshgamTheme.colors["textColor"]!!
                                         )
@@ -409,19 +409,19 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                 text = "جمع سبد خرید",
                                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
                                 fontSize = 10.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                             Text(
                                 text = DecimalFormat(",000").format(finalPrice.value.toInt()),
                                 color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
                                 fontSize = 22.sp
                             )
                             Text(
                                 text = "تومان",
                                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
                                 fontSize = 11.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                         }
                         Button(modifier = Modifier.padding(10.dp),
@@ -432,7 +432,7 @@ fun ViewPayment(viewModel: PaymentViewModel = hiltViewModel(),navController: Nav
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 text = "پرداخت و شروع یادگیری",
                                 color = Color.White,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                         }
                     }

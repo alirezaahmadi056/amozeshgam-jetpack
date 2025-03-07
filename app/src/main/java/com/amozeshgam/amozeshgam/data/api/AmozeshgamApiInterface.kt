@@ -12,6 +12,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestDeleteFavorite
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestDiscount
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestGetCourse
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
+import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndHash
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndUserId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestPhone
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestRegister
@@ -56,6 +57,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiResponsePayment
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseRoadMapQuestion
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleField
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleSubField
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseUserPrivateData
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -320,7 +322,7 @@ interface AmozeshgamApiInterface {
     @POST("/api/upload/avatar")
     fun apiUploadAvatar(
         @Header("x-api-key") apiKey: String = BuildConfig.API_KEY,
-        @Part("hash_login") hash: MultipartBody.Part,
+        @Part hash_login: MultipartBody.Part,
         @Part id: MultipartBody.Part,
         @Part avatar: MultipartBody.Part,
     ): Call<Any>
@@ -372,4 +374,10 @@ interface AmozeshgamApiInterface {
         @Header("x-api-key") apiKey: String = BuildConfig.API_KEY,
         @Body body: ApiRequestId,
     ): Call<ApiResponseRoadMapQuestion>
+
+    @POST("/api/user/data")
+    fun apiGetUserPrivateData(
+        @Header("x-api-key") apiKey: String = BuildConfig.API_KEY,
+        @Body body: ApiRequestIdAndHash
+    ): Call<ApiResponseUserPrivateData>
 }

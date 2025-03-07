@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +44,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -56,6 +58,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -65,6 +68,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -75,6 +79,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -85,6 +91,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -105,6 +112,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -122,27 +130,27 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.Popup
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.text.isDigitsOnly
 import androidx.core.util.Consumer
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import com.amozeshgam.amozeshgam.R
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.local.GlobalUiModel
-import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseUserPrivateData
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.HomeViewModel
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 object UiHandler {
     fun changeTheme(themeCode: Int, dataBaseInputOutput: DataBaseInputOutput?) {
@@ -288,9 +296,7 @@ object UiHandler {
                                         isLoading.value = !worker()
                                     }
                                 }
-                            },
-                            text = "تلاش مجدد",
-                            color = AmozeshgamTheme.colors["primary"]!!
+                            }, text = "تلاش مجدد", color = AmozeshgamTheme.colors["primary"]!!
                         )
                     }
                     if (navController != null) {
@@ -303,9 +309,7 @@ object UiHandler {
                                 context.startActivity(
                                     Intent(Settings.ACTION_WIFI_SETTINGS)
                                 )
-                            },
-                            text = "رفتن به تنظیمات",
-                            color = AmozeshgamTheme.colors["primary"]!!
+                            }, text = "رفتن به تنظیمات", color = AmozeshgamTheme.colors["primary"]!!
                         )
                     }
                 }
@@ -350,7 +354,10 @@ object UiHandler {
                     1.dp, AmozeshgamTheme.colors["borderColor"]!!, RoundedCornerShape(7.dp)
                 )
                 .background(AmozeshgamTheme.colors["background"]!!)
-                .padding(8.dp),
+                .padding(8.dp)
+                .clickable {
+                    onClick()
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -359,7 +366,7 @@ object UiHandler {
                     .height(20.dp),
                 text = text,
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"],
             )
             Image(
                 modifier = Modifier
@@ -400,8 +407,7 @@ object UiHandler {
                 modifier = Modifier
                     .padding(5.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(AmozeshgamTheme.colors["dialogBackground"]!!),
-                content = content
+                    .background(AmozeshgamTheme.colors["dialogBackground"]!!), content = content
             )
         }
     }
@@ -434,7 +440,7 @@ object UiHandler {
                     text = text,
                     color = AmozeshgamTheme.colors["textColor"]!!,
                     maxLines = 1,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+                    fontFamily = AmozeshgamTheme.fonts["bold"]
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -479,17 +485,19 @@ object UiHandler {
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Right,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = description,
                     textAlign = TextAlign.Right,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = buttons
@@ -525,8 +533,7 @@ object UiHandler {
                             10.dp,
                             ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
                             spotColor = AmozeshgamTheme.colors["shadowColor"]!!
-                        ),
-                        color = AmozeshgamTheme.colors["background"]!!
+                        ), color = AmozeshgamTheme.colors["background"]!!
                     )
                 },
                 indicator = {
@@ -549,7 +556,7 @@ object UiHandler {
                             color = AmozeshgamTheme.colors["textColor"]!!,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_black))
+                            fontFamily = AmozeshgamTheme.fonts["black"]
                         )
                     }
                 }
@@ -605,21 +612,18 @@ object UiHandler {
                     focusedIndicatorColor = Color.Transparent
                 )
             )
-            ExposedDropdownMenu(
-                containerColor = AmozeshgamTheme.colors["background"]!!,
+            ExposedDropdownMenu(containerColor = AmozeshgamTheme.colors["background"]!!,
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }) {
                 items.forEachIndexed { index, value ->
                     DropdownMenuItem(text = {
                         Text(
-                            text = value,
-                            color = AmozeshgamTheme.colors["textColor"]!!
+                            text = value, color = AmozeshgamTheme.colors["textColor"]!!
                         )
-                    },
-                        onClick = {
-                            expanded.value = false
-                            onValueChange(index)
-                        })
+                    }, onClick = {
+                        expanded.value = false
+                        onValueChange(index)
+                    })
                 }
             }
         }
@@ -680,19 +684,18 @@ object UiHandler {
                                 Text(
                                     text = "تومان",
                                     color = AmozeshgamTheme.colors["primary"]!!,
-                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                     fontSize = 16.sp
                                 )
                                 Text(
                                     text = DecimalFormat(",000").format(suggestionList[index]),
                                     color = AmozeshgamTheme.colors["primary"]!!,
-                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                     fontSize = 16.sp
                                 )
                             },
                         ) {
-                            text.value =
-                                suggestionList[index].toString()
+                            text.value = suggestionList[index].toString()
                         }
                     }
                 }
@@ -935,7 +938,7 @@ object UiHandler {
                             text = title,
                             textAlign = TextAlign.End,
                             color = AmozeshgamTheme.colors["textColor"]!!,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+                            fontFamily = AmozeshgamTheme.fonts["bold"]
                         )
                     },
                     actions = {
@@ -1012,16 +1015,14 @@ object UiHandler {
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(
-                        Font(R.font.yekan_bakh_bold)
-                    ),
+                    fontFamily = AmozeshgamTheme.fonts["bold"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = body,
                     textAlign = TextAlign.Right,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
                 Row(
@@ -1052,8 +1053,7 @@ object UiHandler {
                             onClick = onBackClick,
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             border = BorderStroke(
-                                1.dp,
-                                color = AmozeshgamTheme.colors["primary"]!!
+                                1.dp, color = AmozeshgamTheme.colors["primary"]!!
                             ),
                             shape = RoundedCornerShape(10.dp)
                         ) {
@@ -1069,11 +1069,11 @@ object UiHandler {
     fun KeyboardIsOpened(keyboardOpened: MutableState<Boolean>) {
         val view = LocalView.current
         DisposableEffect(Unit) {
-            val listener =
-                OnGlobalLayoutListener {
-                    keyboardOpened.value = ViewCompat.getRootWindowInsets(view)
-                        ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
-                }
+            val listener = OnGlobalLayoutListener {
+                keyboardOpened.value =
+                    ViewCompat.getRootWindowInsets(view)?.isVisible(WindowInsetsCompat.Type.ime())
+                        ?: true
+            }
             view.viewTreeObserver.addOnGlobalLayoutListener(listener)
             onDispose {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
@@ -1093,9 +1093,8 @@ object UiHandler {
     ) {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         val navItems = viewModel.getNavItems()
-        val showMenuItem = remember {
-            mutableStateOf(false)
-        }
+        val drawerNavItems = viewModel.getDrawerNavItems()
+
         val snackHostState = remember {
             SnackbarHostState()
         }
@@ -1103,437 +1102,562 @@ object UiHandler {
             mutableStateOf(false)
         }
         val context = LocalContext.current
-        val dontShowGetPermissionDialogAgain = remember {
+        val doNotShowGetPermissionDialogAgain = remember {
             mutableStateOf(false)
         }
-        AmozeshgamTheme(
-            darkTheme = UiHandler.themeState()
-        ) {
-            Scaffold(
-                topBar = {
-                    if (showDefaultTopAppBar) {
-                        TopAppBar(
-                            modifier = Modifier.shadow(
-                                50.dp,
-                                spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
-                                ambientColor = AmozeshgamTheme.colors["shadowColor"]!!
-                            ),
-                            title = {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    Image(
-                                        modifier = Modifier
-                                            .align(Alignment.Center)
-                                            .fillMaxHeight()
-                                            .padding(12.dp),
-                                        painter = painterResource(id = AmozeshgamTheme.assets["amozeshgamBanner"]!!),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.FillHeight
-                                    )
+        val drawerStateValue = remember {
+            mutableStateOf(DrawerValue.Closed)
+        }
+        val drawerState = rememberDrawerState(drawerStateValue.value)
+        val coroutine = rememberCoroutineScope()
 
-                                }
-                            },
-                            navigationIcon = {
-                                IconButton(modifier = Modifier.size(67.dp), onClick = {
-                                    navController.navigate(NavigationScreenHandler.NotificationScreen.route)
-                                }) {
-                                    if (GlobalUiModel.numberOfMessage.intValue != 0) {
-                                        BadgedBox(badge = {
-                                            Badge(
-                                                modifier = Modifier.padding(end = 10.dp),
-                                                containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
-                                                contentColor = AmozeshgamTheme.colors["primary"]!!
-                                            ) {
-                                                Text(
-                                                    text = GlobalUiModel.numberOfMessage.intValue.toString(),
-                                                    color = Color.White
-                                                )
-                                            }
-                                        }) {
-                                            Icon(
-                                                modifier = Modifier.padding(5.dp),
-                                                painter = painterResource(id = R.drawable.ic_notification),
-                                                contentDescription = null,
-                                                tint = AmozeshgamTheme.colors["textColor"]!!
-                                            )
-                                        }
-                                    } else {
-                                        Icon(
-                                            modifier = Modifier.padding(5.dp),
-                                            painter = painterResource(id = R.drawable.ic_notification),
-                                            contentDescription = null,
-                                            tint = AmozeshgamTheme.colors["textColor"]!!
-                                        )
-                                    }
-                                }
-                            },
-                            actions = {
-                                if (currentRoute == NavigationScreenHandler.HomeScreen.route) {
-                                    IconButton(onClick = {
-                                        showMenuItem.value = true
-                                    }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_more),
-                                            contentDescription = null,
-                                            tint = AmozeshgamTheme.colors["textColor"]!!
-                                        )
-                                    }
-                                } else {
-                                    IconButton(onClick = {
-                                        viewModel.clearAllExoplayer()
-                                        navController.popBackStack()
-                                    }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_arrow_right),
-                                            contentDescription = null,
-                                            tint = AmozeshgamTheme.colors["textColor"]!!
-                                        )
-                                    }
-                                }
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(containerColor = AmozeshgamTheme.colors["background"]!!)
-                        )
-                    }
-                },
-                bottomBar = {
-                    if (showDefaultBottomBar) {
-                        BottomAppBar(
+        val showLogOutDialog = remember {
+            mutableStateOf(false)
+        }
+        val userPrivateData = remember {
+            mutableStateOf<ApiResponseUserPrivateData?>(null)
+        }
+        AmozeshgamTheme(
+            darkTheme = themeState()
+        ) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width((LocalConfiguration.current.screenWidthDp / 1.2).dp)
+                            .background(AmozeshgamTheme.colors["background"]!!),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(55.dp)
-                                .shadow(
-                                    color = AmozeshgamTheme.colors["shadowColor"]!!,
-                                    offsetX = 4.dp,
-                                    offsetY = 4.dp,
-                                    blurRadius = 8.dp
-                                )
-                                .shadow(5.dp),
-
-                            containerColor = AmozeshgamTheme.colors["background"]!!,
-                            tonalElevation = 10.dp,
-                        ) {
-                            repeat(navItems.size) { index ->
-                                NavigationBarItem(selected = false, onClick = {
-                                    navController.navigate(navItems[index].route)
-                                }, icon = {
-                                    if (index == 2 && GlobalUiModel.numberOfCart.intValue != 0) {
-                                        BadgedBox(badge = {
-                                            Badge(
-                                                containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
-                                                contentColor = AmozeshgamTheme.colors["primary"]!!
-                                            ) {
-                                                Text(
-                                                    text = GlobalUiModel.numberOfCart.intValue.toString(),
-                                                    color = Color.White
-                                                )
-                                            }
-                                        }) {
-                                            Icon(
-                                                painter = painterResource(
-                                                    id = if (navItems[index].isSelected(
-                                                            currentRoute.toString()
-                                                        )
-                                                    ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
-                                                ),
-                                                contentDescription = null,
-                                                tint = if (navItems[index].isSelected(currentRoute.toString())) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
-                                            )
-                                        }
-                                    } else {
-                                        Icon(
-                                            painter = painterResource(
-                                                id = if (navItems[index].isSelected(
-                                                        currentRoute.toString()
-                                                    )
-                                                ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
-                                            ),
-                                            contentDescription = null,
-                                            tint = if (navItems[index].isSelected(currentRoute.toString())) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
-                                        )
+                                .height(80.dp)
+                                .also {
+                                    if (userPrivateData.value == null) {
+                                        it.shimmer()
                                     }
-                                })
-                            }
-                        }
-                    }
-                },
-                snackbarHost = {
-                    SnackbarHost(snackHostState) {
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                            Snackbar(
-                                actionColor = AmozeshgamTheme.colors["background"]!!,
-                                snackbarData = it,
-                                containerColor = AmozeshgamTheme.colors["textColor"]!!,
-                                contentColor = AmozeshgamTheme.colors["background"]!!
-                            )
-                        }
-                    }
-                },
-                containerColor = AmozeshgamTheme.colors["background"]!!
-            ) { padding ->
-                Box(modifier = Modifier.padding(padding)) {
-                    content(navController)
-                }
-                if (showMenuItem.value) {
-                    Popup(
-                        onDismissRequest = {
-                            showMenuItem.value = false
-                        },
-                        alignment = Alignment.TopEnd,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(padding)
-                                .shadow(5.dp, shape = RoundedCornerShape(10.dp))
-                                .background(color = AmozeshgamTheme.colors["background"]!!)
-                                .width(200.dp)
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Column(
+                            AnythingRow(modifier = Modifier.padding(10.dp), itemTwo = {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        userPrivateData.value?.username ?: "نام کاربری",
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
+                                        color = AmozeshgamTheme.colors["textColor"]!!
+                                    )
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Text(
+                                        userPrivateData.value?.phone ?: "شماره ی تلفن",
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
+                                        color = AmozeshgamTheme.colors["textColor"]!!
+                                    )
+                                }
+                            }, itemOne = {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .shadow(
+                                            2.dp,
+                                            shape = CircleShape,
+                                            ambientColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                                            spotColor = AmozeshgamTheme.colors["shadowColor"]!!
+                                        ),
+                                    model = userPrivateData.value?.avatar,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            })
+                            IconButton(modifier = Modifier.padding(10.dp), onClick = {
+                                navController.navigate(NavigationScreenHandler.ProfileScreen.route)
+                            }) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_edit),
+                                    contentDescription = null,
+                                    tint = AmozeshgamTheme.colors["primary"]!!
+                                )
+                            }
+
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(
+                                    vertical = 5.dp, horizontal = 10.dp
+                                )
+                                .fillMaxWidth(),
+                            thickness = 1.dp,
+                            color = AmozeshgamTheme.colors["secondaryTextColor"]!!
+                        )
+                        repeat(drawerNavItems.size) { index ->
+                            Row(
                                 modifier = Modifier
                                     .padding(10.dp)
                                     .fillMaxWidth()
-                                    .align(Alignment.TopEnd),
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                UiHandler.AnythingRow(
-                                    modifier = Modifier
-                                        .padding(vertical = 5.dp)
-                                        .clickable {
-                                            showMenuItem.value = false
-                                            navController.navigate(NavigationScreenHandler.TicketScreen.route)
-                                        },
-                                    itemOne = {
-                                        Text(
-                                            text = "پشتیبانی",
-                                            textAlign = TextAlign.Right,
-                                            color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontSize = 15.sp,
-                                            fontFamily = AmozeshgamTheme.fonts["bold"]
-                                        )
+                                    .size(45.dp)
+                                    .clickable {
+                                        if (drawerNavItems[index].mode == NavDrawerMode.LINK) {
+                                            context.openLink(drawerNavItems[index].route)
+                                        } else {
+                                            navController.navigate(drawerNavItems[index].route)
+                                        }
                                     },
-                                    itemTwo = {
-                                        Image(
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .padding(2.dp),
-                                            painter = painterResource(R.drawable.ic_support),
-                                            contentDescription = null
-                                        )
-                                    }
-                                )
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .padding(5.dp)
-                                        .fillMaxWidth(),
-                                    thickness = 1.dp,
-                                    color = AmozeshgamTheme.colors["textColor"]!!.copy(alpha = 0.3f)
-                                )
-                                UiHandler.AnythingRow(
-                                    modifier = Modifier
-                                        .clickable {
-                                            showMenuItem.value = false
-                                        },
-                                    itemOne = {
-                                        Text(
-                                            text = "تماس با ما",
-                                            textAlign = TextAlign.Right,
-                                            color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontSize = 15.sp,
-                                            fontFamily = AmozeshgamTheme.fonts["bold"]
-                                        )
-                                    },
-                                    itemTwo = {
-                                        Image(
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .padding(2.dp),
-                                            painter = painterResource(R.drawable.ic_contact_us),
-                                            contentDescription = null
-                                        )
-                                    }
-                                )
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .padding(5.dp)
-                                        .fillMaxWidth(),
-                                    thickness = 1.dp,
-                                    color = AmozeshgamTheme.colors["textColor"]!!.copy(alpha = 0.3f)
-                                )
-                                UiHandler.AnythingRow(
-                                    modifier = Modifier
-                                        .clickable {
-                                            showMenuItem.value = false
-                                            viewModel.logOut()
-                                            navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
-                                                popUpTo(NavigationClusterHandler.Home.route) {
-                                                    inclusive = false
-                                                }
-                                            }
-                                        },
-                                    itemOne = {
-                                        Text(
-                                            text = "خروج از حساب",
-                                            textAlign = TextAlign.Right,
-                                            color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontSize = 15.sp,
-                                            fontFamily = AmozeshgamTheme.fonts["bold"]
-                                        )
-                                    },
-                                    itemTwo = {
-                                        Image(
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .padding(2.dp),
-                                            painter = painterResource(R.drawable.ic_logout),
-                                            contentDescription = null
-                                        )
-                                    }
-                                )
-                            }
-
-                        }
-                    }
-                }
-                if (showRecipientNotificationDialog.value) {
-                    UiHandler.AlertDialog(
-                        onDismiss = {
-                            if (dontShowGetPermissionDialogAgain.value) {
-                                viewModel.doNotShowGetPermissionDialog(
-                                    true
-                                )
-                            }
-                            showRecipientNotificationDialog.value = false
-                        },
-                        imageId = AmozeshgamTheme.assets["amozeshgamBanner"]!!,
-                        title = "دسترسی خواندن اعلانات",
-                        description = "برای بهتر شدن خدمات ارايه شده توسط آموزشگام نیاز است که دسترسی خواندن اعلانات را فعال کنید",
-                        buttons = {
-                            TextButton(
-                                modifier = Modifier.padding(5.dp),
-                                onClick = {
-                                    showRecipientNotificationDialog.value = false
-                                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-                                },
-                                shape = RoundedCornerShape(10.dp),
-                                contentPadding = PaddingValues(10.dp)
-                            ) {
-                                Text(
-                                    text = "فعال کردن",
-                                    color = AmozeshgamTheme.colors["primary"]!!,
-                                    fontFamily = AmozeshgamTheme.fonts["regular"]
-                                )
-                            }
-                            Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
+                                AnythingRow(itemTwo = {
+                                    Text(
+                                        text = drawerNavItems[index].title,
+                                        color = AmozeshgamTheme.colors["textColor"]!!,
+                                        fontFamily = AmozeshgamTheme.fonts["regular"]
+                                    )
+                                }, itemOne = {
+                                    Icon(
+                                        modifier = Modifier.padding(horizontal = 3.dp),
+                                        painter = painterResource(drawerNavItems[index].icon),
+                                        contentDescription = null,
+                                        tint = AmozeshgamTheme.colors["textColor"]!!
+                                    )
+                                })
+                                if (drawerNavItems[index].mode == NavDrawerMode.SWITCH) {
+                                    Switch(checked = drawerNavItems[index].state?.value ?: false,
+                                        onCheckedChange = {
+                                            drawerNavItems[index].state?.value = it
+                                            viewModel.changeUITheme(if (it) GlobalUiModel.DARK_CODE else GlobalUiModel.LIGHT_CODE)
+                                        },
+                                        colors = SwitchDefaults.colors(
+                                            checkedThumbColor = AmozeshgamTheme.colors["primary"]!!,
+                                            checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!.copy(
+                                                alpha = 1f
+                                            )
+                                        ),
+                                        thumbContent = {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(20.dp)
+                                                    .clip(RoundedCornerShape(100))
+                                            )
+                                        })
+                                } else {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_arrow_left),
+                                        contentDescription = null,
+                                        tint = AmozeshgamTheme.colors["textColor"]!!
+                                    )
+                                }
+
+                            }
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = 10.dp
+                                    )
+                                    .fillMaxWidth(),
+                                thickness = 1.dp,
+                                color = AmozeshgamTheme.colors["secondaryTextColor"]!!
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .size(60.dp)
+                                .clickable {
+                                    coroutine.launch {
+                                        drawerState.close()
+                                    }
+                                    showLogOutDialog.value = true
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            AnythingRow(itemTwo = {
                                 Text(
-                                    text = "دیگر نمایش نده",
-                                    color = AmozeshgamTheme.colors["textColor"]!!,
+                                    text = "خروج از حساب",
+                                    color = Color.Red,
                                     fontFamily = AmozeshgamTheme.fonts["regular"]
                                 )
-                                Checkbox(
-                                    checked = dontShowGetPermissionDialogAgain.value,
-                                    onCheckedChange = {
-                                        dontShowGetPermissionDialogAgain.value = it
-                                    },
-                                    colors = CheckboxDefaults.colors(
-                                        checkmarkColor = AmozeshgamTheme.colors["primary"]!!,
-                                        checkedColor = AmozeshgamTheme.colors["background"]!!
-                                    )
+                            }, itemOne = {
+                                Icon(
+                                    modifier = Modifier.padding(horizontal = 3.dp),
+                                    painter = painterResource(R.drawable.ic_logout),
+                                    contentDescription = null,
+                                    tint = Color.Red
                                 )
-                            }
-                        }
-                    )
-                }
-                if (GlobalUiModel.errorExceptionDialog.value) {
-                    Log.i(
-                        "jjj",
-                        "HomeScaffoldPattern: ${GlobalUiModel.errorExceptionMessage.value}"
-                    )
-                    UiHandler.ErrorDialog(
-                        imageId = R.drawable.ic_error,
-                        text = ".برنامه با خطا مواجه شده است"
-                    ) {
-                        Text(
-                            modifier = Modifier.clickable {
-                                viewModel.reportBug(GlobalUiModel.errorExceptionMessage.value)
-                                GlobalUiModel.errorExceptionDialog.value = false
-                            },
-                            text = "اطلاع رسانی",
-                            color = AmozeshgamTheme.colors["errorColor"]!!,
-                            fontFamily = FontFamily(
-                                Font(R.font.yekan_bakh_regular)
+                            })
+
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_left),
+                                contentDescription = null,
+                                tint = Color.Red
                             )
-                        )
-                        Text(
-                            modifier = Modifier.clickable {
-                                GlobalUiModel.errorExceptionDialog.value = false
-                            },
-                            text = "بستن",
-                            color = AmozeshgamTheme.colors["primary"]!!,
-                            fontFamily = AmozeshgamTheme.fonts["regular"]
-                        )
+
+                        }
                     }
-                }
-                if (GlobalUiModel.showNotificationDialog.value) {
-                    UiHandler.AlertDialog(
-                        imageId = R.drawable.ic_message,
-                        title = "",
-                        description = ""
-                    )
-                }
-                if (GlobalUiModel.showEmergencyUSBDialog.value) {
-                    UiHandler.AlertDialog(
-                        imageId = R.drawable.ic_error,
-                        title = "خطای امنیتی",
-                        description = "شما نمی توانید هنگام کار با اپلیکیشن آموزشگام دستگاه خارجی را به گوشی خود وصل کنید لطفا آن را قطع کنید"
-                    )
-                }
-                LaunchedEffect(GlobalUiModel.requestForEnabledDarkMode.value) {
-                    if (GlobalUiModel.requestForEnabledDarkMode.value) {
-                        val snackResult = snackHostState.showSnackbar(
-                            message = "حالت بهینه رو فعال کن تا شارژت دیرتر تموم بشه\uD83D\uDE0A",
-                            actionLabel = "فعال کردن",
-                            duration = SnackbarDuration.Long
-                        )
-                        GlobalUiModel.requestForEnabledDarkMode.value = false
-                        when (snackResult) {
-                            SnackbarResult.ActionPerformed -> {
-                                UiHandler.changeTheme(
-                                    themeCode = GlobalUiModel.DARK_CODE, dataBaseInputOutput = null
+                    LaunchedEffect(Unit) {
+                        viewModel.getUserPrivateData().await().also {
+                            userPrivateData.value = it
+                        }
+                    }
+                }) {
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        Scaffold(topBar = {
+                            if (showDefaultTopAppBar) {
+                                TopAppBar(
+                                    modifier = Modifier.shadow(
+                                        50.dp,
+                                        spotColor = AmozeshgamTheme.colors["shadowColor"]!!,
+                                        ambientColor = AmozeshgamTheme.colors["shadowColor"]!!
+                                    ),
+                                    title = {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth(),
+                                        ) {
+                                            Image(
+                                                modifier = Modifier
+                                                    .align(Alignment.Center)
+                                                    .fillMaxHeight()
+                                                    .padding(12.dp),
+                                                painter = painterResource(id = AmozeshgamTheme.assets["amozeshgamBanner"]!!),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.FillHeight
+                                            )
+
+                                        }
+                                    },
+                                    navigationIcon = {
+                                        IconButton(modifier = Modifier.size(67.dp), onClick = {
+                                            navController.navigate(NavigationScreenHandler.NotificationScreen.route)
+                                        }) {
+                                            if (GlobalUiModel.numberOfMessage.intValue != 0) {
+                                                BadgedBox(badge = {
+                                                    Badge(
+                                                        modifier = Modifier.padding(end = 10.dp),
+                                                        containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
+                                                        contentColor = AmozeshgamTheme.colors["primary"]!!
+                                                    ) {
+                                                        Text(
+                                                            text = GlobalUiModel.numberOfMessage.intValue.toString(),
+                                                            color = Color.White
+                                                        )
+                                                    }
+                                                }) {
+                                                    Icon(
+                                                        modifier = Modifier.padding(5.dp),
+                                                        painter = painterResource(id = R.drawable.ic_notification),
+                                                        contentDescription = null,
+                                                        tint = AmozeshgamTheme.colors["textColor"]!!
+                                                    )
+                                                }
+                                            } else {
+                                                Icon(
+                                                    modifier = Modifier.padding(5.dp),
+                                                    painter = painterResource(id = R.drawable.ic_notification),
+                                                    contentDescription = null,
+                                                    tint = AmozeshgamTheme.colors["textColor"]!!
+                                                )
+                                            }
+                                        }
+                                    },
+                                    actions = {
+                                        if (currentRoute == NavigationScreenHandler.HomeScreen.route) {
+                                            IconButton(onClick = {
+                                                coroutine.launch {
+                                                    drawerState.open()
+                                                }
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_more),
+                                                    contentDescription = null,
+                                                    tint = AmozeshgamTheme.colors["textColor"]!!
+                                                )
+                                            }
+                                        } else {
+                                            IconButton(onClick = {
+                                                viewModel.clearAllExoplayer()
+                                                navController.popBackStack()
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_arrow_right),
+                                                    contentDescription = null,
+                                                    tint = AmozeshgamTheme.colors["textColor"]!!
+                                                )
+                                            }
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(containerColor = AmozeshgamTheme.colors["background"]!!)
                                 )
                             }
+                        }, bottomBar = {
+                            if (showDefaultBottomBar) {
+                                BottomAppBar(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(55.dp)
+                                        .shadow(
+                                            color = AmozeshgamTheme.colors["shadowColor"]!!,
+                                            offsetX = 4.dp,
+                                            offsetY = 4.dp,
+                                            blurRadius = 8.dp
+                                        )
+                                        .shadow(5.dp),
 
-                            else -> Unit
-                        }
-                    }
-                }
-                LaunchedEffect(Unit) {
-                    val result = viewModel.checkHash()
-                    when (result) {
-                        RemoteStateHandler.BAD_RESPONSE -> {
-                            viewModel.logOut()
-                            navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
-                                launchSingleTop = true
-                                restoreState = true
+                                    containerColor = AmozeshgamTheme.colors["background"]!!,
+                                    tonalElevation = 10.dp,
+                                ) {
+                                    repeat(navItems.size) { index ->
+                                        NavigationBarItem(selected = false, onClick = {
+                                            navController.navigate(navItems[index].route)
+                                        }, icon = {
+                                            if (index == 2 && GlobalUiModel.numberOfCart.intValue != 0) {
+                                                BadgedBox(badge = {
+                                                    Badge(
+                                                        containerColor = AmozeshgamTheme.colors["badgeBoxColor"]!!,
+                                                        contentColor = AmozeshgamTheme.colors["primary"]!!
+                                                    ) {
+                                                        Text(
+                                                            text = GlobalUiModel.numberOfCart.intValue.toString(),
+                                                            color = Color.White
+                                                        )
+                                                    }
+                                                }) {
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            id = if (navItems[index].isSelected(
+                                                                    currentRoute.toString()
+                                                                )
+                                                            ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
+                                                        ),
+                                                        contentDescription = null,
+                                                        tint = if (navItems[index].isSelected(
+                                                                currentRoute.toString()
+                                                            )
+                                                        ) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
+                                                    )
+                                                }
+                                            } else {
+                                                Icon(
+                                                    painter = painterResource(
+                                                        id = if (navItems[index].isSelected(
+                                                                currentRoute.toString()
+                                                            )
+                                                        ) navItems[index].selectedIcon else navItems[index].unSelectedIcon
+                                                    ),
+                                                    contentDescription = null,
+                                                    tint = if (navItems[index].isSelected(
+                                                            currentRoute.toString()
+                                                        )
+                                                    ) AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!
+                                                )
+                                            }
+                                        })
+                                    }
+                                }
                             }
-                            Toast.makeText(
-                                context,
-                                "شما از این حساب اخراج شدید",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        }, snackbarHost = {
+                            SnackbarHost(snackHostState) {
+                                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                                    Snackbar(
+                                        actionColor = AmozeshgamTheme.colors["background"]!!,
+                                        snackbarData = it,
+                                        containerColor = AmozeshgamTheme.colors["textColor"]!!,
+                                        contentColor = AmozeshgamTheme.colors["background"]!!
+                                    )
+                                }
+                            }
+                        }, containerColor = AmozeshgamTheme.colors["background"]!!
+                        ) { padding ->
+                            Box(modifier = Modifier.padding(padding)) {
+                                content(navController)
+                            }
+                            if (showLogOutDialog.value) {
+                                AlertDialog(
+                                    onDismiss = {
+                                        showLogOutDialog.value = false
+                                    },
+                                    imageId = R.drawable.ic_logout,
+                                    title = "خروج از حساب کاربری",
+                                    description = "ایا میخواهید از حساب خود خارج شوید؟",
+                                    buttons = {
+                                        Button(
+                                            modifier = Modifier.padding(horizontal = 5.dp),
+                                            onClick = {
+                                                viewModel.logOut()
+                                                navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
+                                                    popUpTo(NavigationClusterHandler.Home.route) {
+                                                        inclusive = false
+                                                    }
+                                                }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                                            shape = RoundedCornerShape(5.dp)
+                                        ) {
+                                            Text(
+                                                text = "خروج",
+                                                color = Color.White,
+                                                fontFamily = AmozeshgamTheme.fonts["regular"]
+                                            )
+                                        }
+                                        Text(
+                                            modifier = Modifier
+                                                .padding(horizontal = 5.dp)
+                                                .clickable {
+                                                    showLogOutDialog.value = false
+                                                },
+                                            text = "لغو",
+                                            color = AmozeshgamTheme.colors["primary"]!!,
+                                            fontFamily = AmozeshgamTheme.fonts["regular"]
+                                        )
+                                    }
+                                )
+                            }
+                            if (showRecipientNotificationDialog.value) {
+                                AlertDialog(onDismiss = {
+                                    if (doNotShowGetPermissionDialogAgain.value) {
+                                        viewModel.doNotShowGetPermissionDialog(
+                                            true
+                                        )
+                                    }
+                                    showRecipientNotificationDialog.value = false
+                                },
+                                    imageId = AmozeshgamTheme.assets["amozeshgamBanner"]!!,
+                                    title = "دسترسی خواندن اعلانات",
+                                    description = "برای بهتر شدن خدمات ارايه شده توسط آموزشگام نیاز است که دسترسی خواندن اعلانات را فعال کنید",
+                                    buttons = {
+                                        TextButton(
+                                            modifier = Modifier.padding(5.dp),
+                                            onClick = {
+                                                showRecipientNotificationDialog.value = false
+                                                context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                                            },
+                                            shape = RoundedCornerShape(10.dp),
+                                            contentPadding = PaddingValues(10.dp)
+                                        ) {
+                                            Text(
+                                                text = "فعال کردن",
+                                                color = AmozeshgamTheme.colors["primary"]!!,
+                                                fontFamily = AmozeshgamTheme.fonts["regular"]
+                                            )
+                                        }
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                text = "دیگر نمایش نده",
+                                                color = AmozeshgamTheme.colors["textColor"]!!,
+                                                fontFamily = AmozeshgamTheme.fonts["regular"]
+                                            )
+                                            Checkbox(
+                                                checked = doNotShowGetPermissionDialogAgain.value,
+                                                onCheckedChange = {
+                                                    doNotShowGetPermissionDialogAgain.value = it
+                                                },
+                                                colors = CheckboxDefaults.colors(
+                                                    checkmarkColor = AmozeshgamTheme.colors["primary"]!!,
+                                                    checkedColor = AmozeshgamTheme.colors["background"]!!
+                                                )
+                                            )
+                                        }
+                                    })
+                            }
+                            if (GlobalUiModel.errorExceptionDialog.value) {
+                                Log.i(
+                                    "jjj",
+                                    "HomeScaffoldPattern: ${GlobalUiModel.errorExceptionMessage.value}"
+                                )
+                                ErrorDialog(
+                                    imageId = R.drawable.ic_error,
+                                    text = ".برنامه با خطا مواجه شده است"
+                                ) {
+                                    Text(
+                                        modifier = Modifier.clickable {
+                                            viewModel.reportBug(GlobalUiModel.errorExceptionMessage.value)
+                                            GlobalUiModel.errorExceptionDialog.value = false
+                                        },
+                                        text = "اطلاع رسانی",
+                                        color = AmozeshgamTheme.colors["errorColor"]!!,
+                                        fontFamily = AmozeshgamTheme.fonts["regular"]
+                                    )
+                                    Text(
+                                        modifier = Modifier.clickable {
+                                            GlobalUiModel.errorExceptionDialog.value = false
+                                        },
+                                        text = "بستن",
+                                        color = AmozeshgamTheme.colors["primary"]!!,
+                                        fontFamily = AmozeshgamTheme.fonts["regular"]
+                                    )
+                                }
+                            }
+                            if (GlobalUiModel.showNotificationDialog.value) {
+                                AlertDialog(
+                                    imageId = R.drawable.ic_message, title = "", description = ""
+                                )
+                            }
+                            if (GlobalUiModel.showEmergencyUSBDialog.value) {
+                                AlertDialog(
+                                    imageId = R.drawable.ic_error,
+                                    title = "خطای امنیتی",
+                                    description = "شما نمی توانید هنگام کار با اپلیکیشن آموزشگام دستگاه خارجی را به گوشی خود وصل کنید لطفا آن را قطع کنید"
+                                )
+                            }
+                            LaunchedEffect(GlobalUiModel.requestForEnabledDarkMode.value) {
+                                if (GlobalUiModel.requestForEnabledDarkMode.value) {
+                                    val snackResult = snackHostState.showSnackbar(
+                                        message = "حالت بهینه رو فعال کن تا شارژت دیرتر تموم بشه\uD83D\uDE0A",
+                                        actionLabel = "فعال کردن",
+                                        duration = SnackbarDuration.Long
+                                    )
+                                    GlobalUiModel.requestForEnabledDarkMode.value = false
+                                    when (snackResult) {
+                                        SnackbarResult.ActionPerformed -> {
+                                            changeTheme(
+                                                themeCode = GlobalUiModel.DARK_CODE,
+                                                dataBaseInputOutput = null
+                                            )
+                                        }
+
+                                        else -> Unit
+                                    }
+                                }
+                            }
+                            LaunchedEffect(Unit) {
+                                val result = viewModel.checkHash()
+                                when (result) {
+                                    RemoteStateHandler.BAD_RESPONSE -> {
+                                        viewModel.logOut()
+                                        navController.navigate(NavigationScreenHandler.LoginScreenOne.route) {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        Toast.makeText(
+                                            context,
+                                            "شما از این حساب اخراج شدید",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    else -> Unit
+
+                                }
+                            }
+                            LaunchedEffect(Unit) {
+
+                                showRecipientNotificationDialog.value =
+                                    viewModel.showRecipientNotificationPermissionDialog()
+                                Log.i(
+                                    "jjj",
+                                    "HomeScaffoldPattern: ${showRecipientNotificationDialog.value} "
+                                )
+                            }
                         }
-
-                        else -> Unit
-
                     }
-                }
-                LaunchedEffect(Unit) {
-
-                    showRecipientNotificationDialog.value =
-                        viewModel.showRecipientNotificationPermissionDialog()
-                    Log.i("jjj", "HomeScaffoldPattern: ${showRecipientNotificationDialog.value} ")
                 }
             }
         }
@@ -1576,32 +1700,30 @@ fun Modifier.shadow(
     offsetX: Dp = 0.dp,
     offsetY: Dp = 0.dp,
     blurRadius: Dp = 0.dp,
-) = then(
-    drawBehind {
-        drawIntoCanvas { canvas ->
-            val paint = Paint()
-            val frameworkPaint = paint.asFrameworkPaint()
-            if (blurRadius != 0.dp) {
-                frameworkPaint.maskFilter =
-                    (BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL))
-            }
-            frameworkPaint.color = color.toArgb()
-
-            val leftPixel = offsetX.toPx()
-            val topPixel = offsetY.toPx()
-            val rightPixel = size.width + topPixel
-            val bottomPixel = size.height + leftPixel
-
-            canvas.drawRect(
-                left = leftPixel,
-                top = topPixel,
-                right = rightPixel,
-                bottom = bottomPixel,
-                paint = paint,
-            )
+) = then(drawBehind {
+    drawIntoCanvas { canvas ->
+        val paint = Paint()
+        val frameworkPaint = paint.asFrameworkPaint()
+        if (blurRadius != 0.dp) {
+            frameworkPaint.maskFilter =
+                (BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL))
         }
+        frameworkPaint.color = color.toArgb()
+
+        val leftPixel = offsetX.toPx()
+        val topPixel = offsetY.toPx()
+        val rightPixel = size.width + topPixel
+        val bottomPixel = size.height + leftPixel
+
+        canvas.drawRect(
+            left = leftPixel,
+            top = topPixel,
+            right = rightPixel,
+            bottom = bottomPixel,
+            paint = paint,
+        )
     }
-)
+})
 
 fun Context.openLink(link: String) {
     try {

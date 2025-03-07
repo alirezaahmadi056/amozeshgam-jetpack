@@ -60,7 +60,7 @@ fun ViewFAQ(navController: NavController, viewModel: FaqViewModel = hiltViewMode
                                     .padding(10.dp)
                                     .fillMaxWidth(),
                                 textAlign = TextAlign.Right,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
                                 text = faqData.value!!.faq[index].answer
                             )
                         }

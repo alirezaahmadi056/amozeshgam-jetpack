@@ -76,7 +76,7 @@ fun ViewActiveDevice(
                         modifier = Modifier.padding(10.dp),
                         text = "دستگاه های فعال",
                         color = AmozeshgamTheme.colors["primary"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
+                        fontFamily = AmozeshgamTheme.fonts["bold"],
                         fontSize = 15.sp
                     )
                 }
@@ -103,7 +103,7 @@ fun ViewActiveDevice(
                         modifier = Modifier.padding(10.dp),
                         text = ".برای پایان دادن به فعالیت یک دستگاه، بر روی آن بزنید",
                         color = AmozeshgamTheme.colors["textColor"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 }
             }

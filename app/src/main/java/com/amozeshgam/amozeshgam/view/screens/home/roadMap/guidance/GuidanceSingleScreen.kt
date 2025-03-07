@@ -156,7 +156,7 @@ fun ViewPrerequisites(
                 Text(
                     text = it.description,
                     textAlign = TextAlign.End,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
                 Text(
@@ -211,9 +211,7 @@ fun ViewPrerequisites(
                                         Text(
                                             text = "${requirement.time} ساعت ",
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.yekan_bakh_regular)
-                                            )
+                                            fontFamily = AmozeshgamTheme.fonts["regular"]
                                         )
                                     }
                                 },
@@ -253,9 +251,7 @@ fun ViewPrerequisites(
                                         Text(
                                             text = "${DecimalFormat(",000").format(1)} تومان ",
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = FontFamily(
-                                                Font(R.font.yekan_bakh_regular)
-                                            )
+                                            fontFamily = AmozeshgamTheme.fonts["regular"]
                                         )
                                     }
                                 },
@@ -290,7 +286,7 @@ fun ViewPrerequisites(
                         Text(
                             text = "افزودن به سبد خرید",
                             color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                            fontFamily =AmozeshgamTheme.fonts["regular"]
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_cart),

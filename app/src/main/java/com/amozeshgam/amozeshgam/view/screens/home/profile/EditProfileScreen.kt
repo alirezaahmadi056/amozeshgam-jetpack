@@ -184,7 +184,7 @@ fun ViewEditProfile(
                 Text(
                     modifier = Modifier.align(Alignment.End),
                     text = "نام و نام خانوادگی",
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_thin)),
+                    fontFamily = AmozeshgamTheme.fonts["light"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -204,7 +204,7 @@ fun ViewEditProfile(
                 Text(
                     modifier = Modifier.align(Alignment.End),
                     text = "شماره تلفن",
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_thin)),
+                    fontFamily = AmozeshgamTheme.fonts["light"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -231,7 +231,7 @@ fun ViewEditProfile(
                     Text(
                         modifier = Modifier.align(Alignment.End),
                         text = "ایمیل",
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_thin)),
+                        fontFamily = AmozeshgamTheme.fonts["light"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                     Spacer(modifier = Modifier.height(15.dp))
@@ -257,7 +257,7 @@ fun ViewEditProfile(
                     modifier = Modifier.align(Alignment.End),
                     text = "تاریخ تولد",
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_thin))
+                    fontFamily = AmozeshgamTheme.fonts["light"]
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 UiHandler.CustomTextField(

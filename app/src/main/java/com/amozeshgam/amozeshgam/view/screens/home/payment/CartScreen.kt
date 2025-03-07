@@ -168,19 +168,19 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                                 text = "جمع سبد خرید",
                                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
                                 fontSize = 10.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                             Text(
                                 text = DecimalFormat(",000").format(cartData.value!!.finalPrice),
                                 fontSize = 22.sp,
                                 color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                             Text(
                                 text = "تومان",
                                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
                                 fontSize = 11.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                         }
                         Button(
@@ -200,7 +200,7 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 text = "ادامه و ثبت سفارش",
                                 color = AmozeshgamTheme.colors["primary"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                         }
                     }
@@ -220,9 +220,7 @@ fun ViewCart(viewModel: CartViewModel = hiltViewModel(), navController: NavContr
                     )
                     Text(
                         text = ".لیست سفارشات شما خالی است",
-                        fontFamily = FontFamily(
-                            Font(R.font.yekan_bakh_regular)
-                        ),
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                 }

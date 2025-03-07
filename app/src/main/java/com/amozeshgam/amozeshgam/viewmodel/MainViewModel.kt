@@ -10,6 +10,9 @@ import com.amozeshgam.amozeshgam.broadcast.BroadCastBattery
 import com.amozeshgam.amozeshgam.broadcast.BroadCastSms
 import com.amozeshgam.amozeshgam.broadcast.BroadCastUSB
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
+import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
+import com.amozeshgam.amozeshgam.handler.NavigationClusterHandler
+import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.SuggestionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -43,11 +46,19 @@ class MainViewModel @Inject constructor(@ApplicationContext private val context:
         )
         context.registerReceiver(usbBroadCast, usbIntentFilter)
     }
-
+    suspend fun userIsLoggedIn():Boolean{
+        return dataBaseInputOutput.getData(DataStoreKey.userIdDataKey) != null && dataBaseInputOutput.getData(DataStoreKey.hashDataKey) != null
+    }
     fun handleTextProvider(text: String) {
         suggestionHandler.setTextToTextProvider(text)
     }
-
+    fun handleDeepLink(link:String):String{
+        val detectedDestination=link.substringAfter("https://app.amozeshgam.com/").split("/")
+        return when(detectedDestination.getOrNull(0)){
+            "home"->NavigationClusterHandler.Home.route
+            else->NavigationScreenHandler.SplashScreen.route
+        }
+    }
     override fun onCleared() {
         super.onCleared()
         context.unregisterReceiver(batteryBroadCast)

@@ -16,5 +16,5 @@ val LocalAmozeshgamId = staticCompositionLocalOf {
     hashMapOf("bgLogin" to backgroundLogin)
 }
 val LocalAmozeshgamFont = staticCompositionLocalOf {
-    hashMapOf("bold" to FontFamily(Font(R.font.yekan_bakh_bold)))
+    hashMapOf("bold" to FontFamily(Font(R.font.bold)))
 }

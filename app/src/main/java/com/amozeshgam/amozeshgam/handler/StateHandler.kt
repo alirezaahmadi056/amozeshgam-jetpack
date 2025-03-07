@@ -25,6 +25,11 @@ enum class NotificationPlayerState {
     PLAY,
     PAUSE
 }
+enum class NavDrawerMode {
+    NORMAL,
+    SWITCH,
+    LINK,
+}
 
 enum class DownloadServiceState {
     START,

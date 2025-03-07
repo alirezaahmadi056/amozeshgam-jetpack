@@ -127,7 +127,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     text = "می خوای متخصص چی بشی",
                     fontSize = 25.sp,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                    fontFamily = AmozeshgamTheme.fonts["black"],
                 )
             }
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -167,7 +167,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                                 fontSize = 24.sp,
                                 color = AmozeshgamTheme.colors["paymentTextColor"]!!,
                                 textAlign = TextAlign.Center,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_black))
+                                fontFamily = AmozeshgamTheme.fonts["black"]
                             )
                             Image(
                                 modifier = Modifier
@@ -193,7 +193,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                         .padding(10.dp)
                         .aspectRatio(2.79f / 1f)
                         .clickable {
-                            context.openLink(homeData.value!!.banners[1].link   )
+                            context.openLink(homeData.value!!.banners[1].link)
                         },
                     model = homeData.value!!.banners[1].image,
                     contentDescription = null
@@ -218,7 +218,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     Text(
                         text = "مشاهده ی همه",
                         color = AmozeshgamTheme.colors["textColor"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 })
                 Text(
@@ -226,7 +226,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     fontSize = 25.sp,
                     color = AmozeshgamTheme.colors["textColor"]!!,
                     fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_black))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
 
                 )
             }
@@ -256,7 +256,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                 style = TextStyle(
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                    fontFamily = AmozeshgamTheme.fonts["black"],
                     color = AmozeshgamTheme.colors["textColor"]!!
                 )
             )
@@ -291,7 +291,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     Text(
                         text = "مشاهده ی همه",
                         color = AmozeshgamTheme.colors["textColor"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
 
                     )
                 })
@@ -299,7 +299,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                     text = "پادکست ها",
                     fontSize = 25.sp,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
                     fontWeight = FontWeight.Black
                 )
             }
@@ -352,7 +352,7 @@ fun ViewHome(navController: NavController, viewModel: HomeViewModel = hiltViewMo
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Black,
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_black))
+                fontFamily = AmozeshgamTheme.fonts["black"]
             )
             Row(
                 modifier = Modifier

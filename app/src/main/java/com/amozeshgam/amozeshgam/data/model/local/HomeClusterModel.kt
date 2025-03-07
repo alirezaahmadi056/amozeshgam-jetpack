@@ -1,11 +1,14 @@
 package com.amozeshgam.amozeshgam.data.model.local
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import com.amozeshgam.amozeshgam.R
+import com.amozeshgam.amozeshgam.handler.NavDrawerMode
 import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
+import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import javax.inject.Inject
 
@@ -38,7 +41,54 @@ class HomeActivityModel @Inject constructor() {
             R.drawable.ic_home
         )
     )
+    val drawerNavItem = arrayOf(
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "مسیر های یادگیری",
+            icon = R.drawable.ic_simple_road_map
+        ),
 
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "دوره های من",
+            icon = R.drawable.ic_book
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "پشتیبانی",
+            icon = R.drawable.ic_support
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "درباره ما",
+            icon = R.drawable.ic_about
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "تماس با ما",
+            icon = R.drawable.ic_contacts
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "اشتراک گذاری برنامه",
+            icon = R.drawable.ic_share,
+            mode = NavDrawerMode.LINK
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "امتیاز به برنامه",
+            icon = R.drawable.ic_star,
+            mode = NavDrawerMode.LINK
+        ),
+        NavDrawerItem(
+            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            title = "حالت تیره",
+            icon = R.drawable.ic_simple_road_map,
+            state = mutableStateOf(GlobalUiModel.uiTheme.intValue == GlobalUiModel.DARK_CODE),
+            mode = NavDrawerMode.SWITCH
+        ),
+
+        )
     val profileItem = arrayOf(
         ProfileItem(
             R.drawable.ic_roadmap,
@@ -135,6 +185,14 @@ data class NavItem(
         return this.route == currentRoute || currentRoute.startsWith(this.route)
     }
 }
+
+data class NavDrawerItem(
+    val route: String,
+    val title: String,
+    val icon: Int,
+    val state: MutableState<Boolean>? = null,
+    val mode: NavDrawerMode = NavDrawerMode.NORMAL
+)
 
 data class ProfileItem(
     val icon: Int,

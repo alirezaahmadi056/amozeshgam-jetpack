@@ -165,7 +165,7 @@ fun ViewPodcastPlayer(
                         fontSize = 25.sp,
                         textAlign = TextAlign.Right,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
+                        fontFamily = AmozeshgamTheme.fonts["bold"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                     UiHandler.AnythingRow(modifier = Modifier
@@ -175,9 +175,7 @@ fun ViewPodcastPlayer(
                             Text(
                                 modifier = Modifier.align(Alignment.End),
                                 text = speech.value,
-                                fontFamily = FontFamily(
-                                    Font(R.font.yekan_bakh_regular)
-                                ),
+                                fontFamily =AmozeshgamTheme.fonts["regular"],
                                 color = AmozeshgamTheme.colors["textColor"]!!
                             )
                         },

@@ -105,9 +105,7 @@ fun ViewSingleNews(viewModel: SingleNewsViewModel = hiltViewModel(), navControll
                         modifier = Modifier.padding(5.dp),
                         text = "پست ها",
                         color = Color.White,
-                        fontFamily = FontFamily(
-                            Font(R.font.yekan_bakh_regular)
-                        ),
+                        fontFamily =AmozeshgamTheme.fonts["regular"],
                         fontSize = 20.sp
 
                     )

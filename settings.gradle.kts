@@ -17,6 +17,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.myket.ir")
         maven("https://jitpack.io")
         maven("https://europe-west3-maven.pkg.dev/talsec-artifact-repository/freerasp")
         maven("https://repo.eclipse.org/content/repositories/paho-releases/")

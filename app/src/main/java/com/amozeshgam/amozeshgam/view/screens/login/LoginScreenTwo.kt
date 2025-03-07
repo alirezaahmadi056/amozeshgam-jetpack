@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -153,26 +154,38 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                 }
 
             }
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 10.dp),
-                text = ".کد تایید ۵ رقمی را وارد کنید",
-                textAlign = TextAlign.End,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
-                fontSize = 25.sp,
-                color = AmozeshgamTheme.colors["textColor"]!!
-            )
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 10.dp),
                 text = "کد تایید برای شماره موبایل $phone ارسال شد",
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
+                fontFamily = AmozeshgamTheme.fonts["bold"],
                 textAlign = TextAlign.End,
-                fontSize = 15.sp,
+                fontSize = 20.sp,
                 color = AmozeshgamTheme.colors["textColor"]!!
+            )
+            UiHandler.AnythingRow(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .align(Alignment.End)
+                    .clickable {
+                        navController.popBackStack()
+                    },
+                itemOne = {
+                    Text(
+                        text = "ویرایش شماره",
+                        color = AmozeshgamTheme.colors["primary"]!!,
+                        fontFamily = AmozeshgamTheme.fonts["medium"],
+                    )
+                },
+                itemTwo = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = null,
+                        tint = AmozeshgamTheme.colors["primary"]!!
+                    )
+                }
             )
             LazyRow(
                 modifier = Modifier
@@ -264,13 +277,13 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                 enabled = code.size == 5,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AmozeshgamTheme.colors["primary"]!!,
-                    disabledContainerColor = AmozeshgamTheme.colors["disableContainer"]!!
+                    disabledContainerColor = AmozeshgamTheme.colors["primary"]!!.copy(alpha = 0.25f),
                 )
             ) {
                 if (!buttonIsLoading.value) {
                     Text(
                         text = "تایید و ادامه",
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                         color = Color.White
                     )
                 } else {
@@ -293,7 +306,7 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                         .padding(10.dp),
                     text = textTimer.value,
                     color = if (textTimer.value == "ارسال مجدد") AmozeshgamTheme.colors["primary"]!! else AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
                 )
             }
             if (showErrorDialog.value) {
@@ -348,7 +361,7 @@ fun ViewLoginTwo(navController: NavHostController, viewModel: LoginViewModel = h
                             if (!it.second) {
                                 navController.navigate(NavigationScreenHandler.LoginScreenThree.route)
                             } else {
-                                navController.navigate(NavigationClusterHandler.Home.route){
+                                navController.navigate(NavigationClusterHandler.Home.route) {
                                     popUpTo(NavigationScreenHandler.LoginScreenTwo.route) {
                                         inclusive = false
                                     }

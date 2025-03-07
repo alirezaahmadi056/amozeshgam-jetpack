@@ -224,9 +224,7 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                                     )
                                     Text(
                                         text = userData.value!!.cups[index].title,
-                                        fontFamily = FontFamily(
-                                            Font(R.font.yekan_bakh_regular)
-                                        ),
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
                                         color = AmozeshgamTheme.colors["textColor"]!!
                                     )
                                 }
@@ -372,7 +370,9 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                                     },
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = AmozeshgamTheme.colors["primary"]!!,
-                                        checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!.copy(alpha = 1f)
+                                        checkedTrackColor = AmozeshgamTheme.colors["itemColor"]!!.copy(
+                                            alpha = 1f
+                                        )
                                     ),
                                     thumbContent = {
                                         Box(
@@ -395,7 +395,18 @@ fun ViewProfile(viewModel: ProfileViewModel = hiltViewModel(), navController: Na
                     UiHandler.WalletChargeBottomSheet(
                         modifier = Modifier.align(Alignment.BottomCenter),
                         onDismissRequest = { showWalletCharge.value = false },
-                        suggestionList = arrayOf(100000,200000,300000,400000,500000,600000,700000,800000,900000,1000000)
+                        suggestionList = arrayOf(
+                            100000,
+                            200000,
+                            300000,
+                            400000,
+                            500000,
+                            600000,
+                            700000,
+                            800000,
+                            900000,
+                            1000000
+                        )
                     ) {
 
                     }

@@ -41,6 +41,7 @@ import coil.decode.ImageDecoderDecoder
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetStory
 import com.amozeshgam.amozeshgam.handler.NavigationScreenHandler
 import com.amozeshgam.amozeshgam.handler.UiHandler
+import com.amozeshgam.amozeshgam.handler.openLink
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.StoryViewModel
 import kotlinx.coroutines.delay
@@ -66,7 +67,8 @@ fun ViewStory(navController: NavController, viewModel: StoryViewModel = hiltView
     }
 
     val sliderState = remember {
-        SliderState(sliderValue.floatValue, valueRange = 0f..60f
+        SliderState(
+            sliderValue.floatValue, valueRange = 0f..60f
         )
     }
     val context = LocalContext.current
@@ -142,7 +144,7 @@ fun ViewStory(navController: NavController, viewModel: StoryViewModel = hiltView
 
                 Button(
                     onClick = {
-
+                        context.openLink(storyData.value!!.link)
                     },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)

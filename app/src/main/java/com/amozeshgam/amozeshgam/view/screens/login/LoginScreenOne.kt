@@ -126,21 +126,11 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 10.dp),
-                text = "ورود یا ثبت نام",
-                textAlign = TextAlign.End,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
-                fontSize = 25.sp,
-                color = AmozeshgamTheme.colors["textColor"]!!
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 10.dp),
                 text = ".لطفا شماره موبایل خود را وارد کنید",
                 textAlign = TextAlign.End,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
-                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = AmozeshgamTheme.fonts["bold"],
+                fontSize = 20.sp,
                 color = AmozeshgamTheme.colors["textColor"]!!
             )
             UiHandler.OutLineTextField(
@@ -151,7 +141,7 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                 label = {
                     Text(
                         text = "شماره موبایل",
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                     )
                 },
                 value = phoneNumber.value,
@@ -207,7 +197,7 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                     .padding(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AmozeshgamTheme.colors["primary"]!!,
-                    disabledContainerColor = AmozeshgamTheme.colors["disableContainer"]!!,
+                    disabledContainerColor = AmozeshgamTheme.colors["primary"]!!.copy(alpha = 0.25f),
                 ),
                 shape = RoundedCornerShape(10.dp),
             ) {
@@ -215,7 +205,7 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                     Text(
                         text = "تایید",
                         color = Color.White,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                     )
                 } else {
                     CircularProgressIndicator(
@@ -235,14 +225,14 @@ fun ViewLoginOne(navController: NavHostController, viewModel: LoginViewModel = h
                 Text(
                     text = ".آموزشگام را مطالعه کردم و می پذیرم",
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                    fontFamily = AmozeshgamTheme.fonts["regular"],
                 )
                 Text(
                     modifier = Modifier.clickable { },
                     text = "شرایط و قوانین",
                     color = AmozeshgamTheme.colors["textButtonColor"]!!,
                     textDecoration = TextDecoration.Underline,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             LaunchedEffect(Unit) {

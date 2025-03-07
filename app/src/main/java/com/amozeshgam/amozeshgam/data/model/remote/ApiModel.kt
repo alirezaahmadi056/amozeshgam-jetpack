@@ -356,6 +356,22 @@ data class ApiResponseGetProfile(
     @SerializedName("cups") val cups: ArrayList<ApiResponseGetProfileCupsData>,
 )
 
+data class ApiRequestIdAndHash(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("hash_login")
+    val hash: String
+)
+
+data class ApiResponseUserPrivateData(
+    @SerializedName("phone")
+    val phone: String,
+    @SerializedName("avatar")
+    val avatar: String,
+    @SerializedName("username")
+    val username: String
+)
+
 data class ApiResponseGetProfileCupsData(
     @SerializedName("title") val title: String,
     @SerializedName("level") val level: String,

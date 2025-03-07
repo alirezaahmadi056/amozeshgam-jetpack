@@ -87,7 +87,8 @@ android {
 }
 
 dependencies {
-    implementation("com.securevale:rasp-android:0.6.0")
+    implementation(libs.androidx.media3.datasource.okhttp)
+    implementation(libs.rasp.android)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.biometric.ktx)

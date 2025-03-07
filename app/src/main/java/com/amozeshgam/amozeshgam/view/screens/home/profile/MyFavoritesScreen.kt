@@ -78,9 +78,7 @@ fun ViewMyFavorites(
                         )
                         Text(
                             text = "دوره ای در لیست علاقه مندی های شما نیست.",
-                            fontFamily = FontFamily(
-                                Font(R.font.yekan_bakh_regular)
-                            )
+                            fontFamily = AmozeshgamTheme.fonts["regular"]
                         )
                     }
                 } else {

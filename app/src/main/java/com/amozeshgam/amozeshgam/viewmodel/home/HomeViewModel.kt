@@ -12,20 +12,25 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.amozeshgam.amozeshgam.data.db.IO.DataBaseInputOutput
 import com.amozeshgam.amozeshgam.data.db.key.DataStoreKey
 import com.amozeshgam.amozeshgam.data.model.local.HomeActivityModel
+import com.amozeshgam.amozeshgam.data.model.local.NavDrawerItem
 import com.amozeshgam.amozeshgam.data.model.local.NavItem
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestCheckHash
+import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndHash
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestReportBug
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseHomeData
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseUserPrivateData
 import com.amozeshgam.amozeshgam.data.repository.HomeClusterRepository
 import com.amozeshgam.amozeshgam.handler.DeviceHandler
 import com.amozeshgam.amozeshgam.handler.RemoteStateHandler
 import com.amozeshgam.amozeshgam.handler.SecurityHandler
+import com.amozeshgam.amozeshgam.handler.UiHandler
 import com.amozeshgam.amozeshgam.service.bound.ScreenStatusService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okio.ByteString.Companion.toByteString
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,11 +53,18 @@ class HomeViewModel @Inject constructor(@ApplicationContext private val context:
 
     @Inject
     lateinit var deviceHandler: DeviceHandler
-    private val _hashIsValid = MutableLiveData<RemoteStateHandler>(RemoteStateHandler.WAITING)
-    val hashIsValid: LiveData<RemoteStateHandler> = _hashIsValid
+
 
     fun getNavItems(): Array<NavItem> {
         return model.navItems
+    }
+
+    fun changeUITheme(themeCode: Int) {
+        UiHandler.changeTheme(themeCode, dataBaseInputOutput)
+    }
+
+    fun getDrawerNavItems(): Array<NavDrawerItem> {
+        return model.drawerNavItem
     }
 
     fun doNotShowGetPermissionDialog(value: Boolean) {
@@ -60,6 +72,20 @@ class HomeViewModel @Inject constructor(@ApplicationContext private val context:
             dataBaseInputOutput.saveData {
                 it[DataStoreKey.showGetNotificationListenerPermissionDialog] = value
             }
+        }
+    }
+
+    fun getUserPrivateData(): Deferred<ApiResponseUserPrivateData?> {
+        return viewModelScope.async {
+            repository.getUserPrivateData(
+                ApiRequestIdAndHash(
+                    id = dataBaseInputOutput.getData(DataStoreKey.userIdDataKey).toString()
+                        .toIntOrNull() ?: 0,
+                    hash = securityHandler.decryptData(
+                        dataBaseInputOutput.getData(DataStoreKey.hashDataKey) ?: byteArrayOf()
+                    )
+                )
+            )
         }
     }
 

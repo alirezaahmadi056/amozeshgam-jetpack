@@ -81,9 +81,7 @@ fun ViewMyPackage(navController: NavController, viewModel: MyCourseViewModel = h
                             Text(
                                 text = ".شما هنوز دوره ای را شروع نکردید",
                                 color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(
-                                    Font(R.font.yekan_bakh_regular)
-                                ),
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
                                 textAlign = TextAlign.Center,
                                 fontSize = 20.sp
                             )

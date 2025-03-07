@@ -18,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,7 +38,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseGetFieldPackage
 import com.amozeshgam.amozeshgam.handler.UiHandler
-import com.amozeshgam.amozeshgam.handler.shadow
 import com.amozeshgam.amozeshgam.view.items.RoadMapSoftwareCanBuild
 import com.amozeshgam.amozeshgam.view.ui.theme.AmozeshgamTheme
 import com.amozeshgam.amozeshgam.viewmodel.home.roadMap.GuidanceViewModel
@@ -168,7 +166,7 @@ fun ViewGuidancePurchase(
                                             .padding(horizontal = 2.dp),
                                         text = DecimalFormat(",000").format(fieldData.value!!.price),
                                         color = AmozeshgamTheme.colors["textColor"]!!,
-                                        fontFamily = AmozeshgamTheme.fonts["regular"]!!,
+                                        fontFamily = AmozeshgamTheme.fonts["regular"],
                                         fontSize = 16.sp
                                     )
                                     if (fieldData.value!!.percent > 0) {
@@ -177,7 +175,7 @@ fun ViewGuidancePurchase(
                                                 .padding(horizontal = 2.dp),
                                             text = DecimalFormat(",000").format(fieldData.value!!.price),
                                             color = AmozeshgamTheme.colors["textColor"]!!,
-                                            fontFamily = AmozeshgamTheme.fonts["regular"]!!,
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 16.sp
                                         )
                                         Box(
@@ -191,7 +189,7 @@ fun ViewGuidancePurchase(
                                                 text = fieldData.value!!.percent.toString() + "%",
                                                 color = Color.White,
                                                 fontSize = 15.sp,
-                                                fontFamily = AmozeshgamTheme.fonts["regular"]!!
+                                                fontFamily = AmozeshgamTheme.fonts["regular"]
                                             )
                                         }
                                     }
@@ -199,7 +197,7 @@ fun ViewGuidancePurchase(
                                 Text(
                                     text = "تومان",
                                     color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
-                                    fontFamily = AmozeshgamTheme.fonts["regular"]!!
+                                    fontFamily = AmozeshgamTheme.fonts["regular"]
                                 )
                             }
                             Button(
@@ -237,7 +235,7 @@ fun ViewGuidancePurchase(
                         ) {
                             Text(
                                 text = "!شروع",
-                                fontFamily = AmozeshgamTheme.fonts["regular"]!!,
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
                                 color = Color.White
                             )
                         }

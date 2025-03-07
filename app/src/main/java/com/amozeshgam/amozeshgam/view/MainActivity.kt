@@ -60,6 +60,9 @@ import com.amozeshgam.amozeshgam.view.screens.splash.ViewSplash
 import com.amozeshgam.amozeshgam.view.screens.splash.ViewTour
 import com.amozeshgam.amozeshgam.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -67,7 +70,6 @@ class MainActivity : ComponentActivity() {
     private var startDestination: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.startBroadCast()
         if (intent.action == Intent.ACTION_SEND) {
             intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
@@ -75,8 +77,10 @@ class MainActivity : ComponentActivity() {
             }
 
         }
-        if (intent.action == Intent.ACTION_VIEW) {
-            startDestination = intent.data.toString()
+        CoroutineScope(Dispatchers.IO).launch {
+            if (intent.action == Intent.ACTION_VIEW && viewModel.userIsLoggedIn()) {
+                startDestination = viewModel.handleDeepLink(intent.data.toString())
+            }
         }
         setContent {
             ViewMainContent(startDestination = startDestination)
@@ -85,7 +89,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ViewMainContent(startDestination: String?) {
+fun ViewMainContent(startDestination: String? = null) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -126,9 +130,15 @@ fun ViewMainContent(startDestination: String?) {
             route = NavigationClusterHandler.Home.route,
             startDestination = NavigationScreenHandler.HomeScreen.route,
             enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }
-        ) {
-            composable(route = NavigationScreenHandler.HomeScreen.route) {
+            exitTransition = { ExitTransition.None },
+
+
+            ) {
+            composable(route = NavigationScreenHandler.HomeScreen.route, deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://app.amozeshgam.com/home"
+                }
+            )) {
                 UiHandler.HomeScaffoldPattern(navController = navController) {
                     ViewHome(navController = it)
                 }
@@ -138,7 +148,7 @@ fun ViewMainContent(startDestination: String?) {
                 arguments = listOf(navArgument("id") { defaultValue = "" }),
                 deepLinks = listOf(
                     navDeepLink {
-                        uriPattern = "https://amozeshgam.com/guidance/{id}"
+                        uriPattern = "https://app.amozeshgam.com/guidance/{id}"
                     }
                 )
             ) {

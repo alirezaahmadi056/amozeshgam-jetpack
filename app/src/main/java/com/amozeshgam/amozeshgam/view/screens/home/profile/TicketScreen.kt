@@ -207,7 +207,7 @@ fun ViewTicket(viewModel: TicketViewModel = hiltViewModel(), navController: NavC
                                 Text(
                                     text = "ارسال درخواست",
                                     color = Color.White,
-                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                    fontFamily = AmozeshgamTheme.fonts["regular"]
                                 )
                             }
                         }
@@ -226,7 +226,7 @@ fun ViewTicket(viewModel: TicketViewModel = hiltViewModel(), navController: NavC
                         ) {
                             Text(
                                 text = "انصراف",
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                fontFamily = AmozeshgamTheme.fonts["regular"],
                                 color = AmozeshgamTheme.colors["primary"]!!
                             )
                         }

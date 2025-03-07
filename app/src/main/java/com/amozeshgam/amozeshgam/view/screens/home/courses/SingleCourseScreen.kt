@@ -254,7 +254,7 @@ fun ViewSingleCourseData(
                 fontSize = 30.sp,
                 textAlign = TextAlign.Right,
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_semibold))
+                fontFamily = AmozeshgamTheme.fonts["bold"]
             )
 
             Row(
@@ -276,7 +276,7 @@ fun ViewSingleCourseData(
                 textAlign = TextAlign.Right,
                 fontSize = 15.sp,
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"]
             )
             Text(
                 modifier = Modifier
@@ -286,7 +286,7 @@ fun ViewSingleCourseData(
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Black,
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_black))
+                fontFamily = AmozeshgamTheme.fonts["black"]
             )
             LazyColumn(
                 modifier = Modifier
@@ -308,7 +308,7 @@ fun ViewSingleCourseData(
                                     UiHandler.AnythingRow(itemOne = {
                                         Text(
                                             text = seasons[index].sub[subIndex].title,
-                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                             fontSize = 17.sp,
                                             color = AmozeshgamTheme.colors["textColor"]!!
                                         )
@@ -451,9 +451,7 @@ fun ViewSingleCourseData(
                 }
             }
         }
-        if (addCourseToMyCartError.value) {
 
-        }
         LaunchedEffect(Unit) {
             viewModel.addCourseToMyCart.observe(lifecycle) {
                 addToMyCartLoading.value = false
@@ -507,7 +505,7 @@ fun ViewSingleCourseComment(
                 text = "دیدگاهی وجود ندارد",
                 color = AmozeshgamTheme.colors["textColor"]!!,
                 fontSize = 28.sp,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"]
             )
         } else {
             LazyColumn {
@@ -564,7 +562,7 @@ fun ViewSingleCourseComment(
                             .heightIn(max = 200.dp),
                         text = "ثبت دیدگاه",
                         fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                        fontFamily = AmozeshgamTheme.fonts["black"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                     IconButton(onClick = { showCommentDialog.value = false }) {

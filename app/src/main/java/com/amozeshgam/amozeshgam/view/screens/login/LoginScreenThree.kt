@@ -120,25 +120,15 @@ fun ViewLoginThree(navController: NavController, viewModel: LoginViewModel = hil
                 }
 
             }
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 10.dp),
-                text = "نام و نام خانوادگی",
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
-                textAlign = TextAlign.End,
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                color = AmozeshgamTheme.colors["textColor"]!!
-            )
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 10.dp),
                 text = ".لطفا نام و نام خانوادگی خود را وارد کنید",
                 textAlign = TextAlign.End,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
-                fontSize = 15.sp,
+                fontFamily = AmozeshgamTheme.fonts["bold"],
+                fontSize = 20.sp,
                 color = AmozeshgamTheme.colors["textColor"]!!
             )
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -150,7 +140,7 @@ fun ViewLoginThree(navController: NavController, viewModel: LoginViewModel = hil
                     label = {
                         Text(
                             text = "نام و نام خانوادگی",
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                            fontFamily = AmozeshgamTheme.fonts["regular"],
                         )
                     },
                     value = name.value,
@@ -183,14 +173,14 @@ fun ViewLoginThree(navController: NavController, viewModel: LoginViewModel = hil
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AmozeshgamTheme.colors["primary"]!!,
-                    disabledContainerColor = AmozeshgamTheme.colors["disableContainer"]!!
+                    disabledContainerColor = AmozeshgamTheme.colors["primary"]!!.copy(alpha = 0.25f),
                 )
             ) {
                 if (!buttonIsLoading.value) {
                     Text(
                         text = "ورود",
                         color = Color.White,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 } else {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)

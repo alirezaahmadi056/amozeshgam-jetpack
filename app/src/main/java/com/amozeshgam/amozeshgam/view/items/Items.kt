@@ -94,7 +94,7 @@ fun StoryItem(onClick: () -> Unit, imageUrl: String, text: String = "") {
                 .align(Alignment.CenterHorizontally),
             text = text,
             color = AmozeshgamTheme.colors["textColor"]!!,
-            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+            fontFamily = AmozeshgamTheme.fonts["regular"],
             maxLines = 2,
             fontSize = 13.sp,
             overflow = TextOverflow.Ellipsis,
@@ -178,7 +178,7 @@ fun FieldAndSubFieldItem(
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = AmozeshgamTheme.colors["textColor"]!!,
-            fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+            fontFamily = AmozeshgamTheme.fonts["bold"]
         )
     }
 }
@@ -240,7 +240,7 @@ fun PaymentItem(imageUrl: String = "", text: String = "") {
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             color = AmozeshgamTheme.colors["textColor"]!!,
-            fontFamily = FontFamily(Font(R.font.yekan_bakh_semibold))
+            fontFamily = AmozeshgamTheme.fonts["black"]
         )
     }
 }
@@ -262,7 +262,7 @@ fun OrderReviewItem(name: String, image: String) {
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             color = AmozeshgamTheme.colors["textColor"]!!,
-            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+            fontFamily = AmozeshgamTheme.fonts["regular"]
         )
 
         AsyncImage(
@@ -315,13 +315,13 @@ fun CartItem(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Text(
                 text = DecimalFormat(",000").format(price.toInt()),
                 color = AmozeshgamTheme.colors["textColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"]
             )
         }
         AsyncImage(
@@ -448,7 +448,7 @@ fun PodcastItem(
                 maxLines = 3,
                 color = AmozeshgamTheme.colors["textColor"]!!,
                 overflow = TextOverflow.Ellipsis,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_semibold))
+                fontFamily = AmozeshgamTheme.fonts["black"]
             )
 
             UiHandler.AnythingRow(modifier = Modifier.fillMaxWidth(), itemOne = {
@@ -462,7 +462,7 @@ fun PodcastItem(
                     text = speech,
                     fontSize = 10.sp,
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             })
         }
@@ -551,7 +551,7 @@ fun RoadMapAbilityItem(image: String, text: String, itemNumber: Int) {
 }
 
 @Composable
-fun RoadMapSoftwareCanBuild(modifier: Modifier = Modifier,image: String, text: String) {
+fun RoadMapSoftwareCanBuild(modifier: Modifier = Modifier, image: String, text: String) {
     Card(
         modifier = modifier
             .padding(10.dp)
@@ -570,7 +570,9 @@ fun RoadMapSoftwareCanBuild(modifier: Modifier = Modifier,image: String, text: S
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
         Column(
-            modifier = Modifier.padding(2.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -667,7 +669,7 @@ fun InformationPackageItem(image: String, name: String) {
             textAlign = TextAlign.Right,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+            fontFamily = AmozeshgamTheme.fonts["regular"],
             color = AmozeshgamTheme.colors["textColor"]!!
         )
     }
@@ -708,12 +710,12 @@ fun InformationTeamItem(image: String, name: String, duty: String) {
                 text = name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold)),
+                fontFamily = AmozeshgamTheme.fonts["bold"],
                 color = AmozeshgamTheme.colors["textColor"]!!
             )
             Text(
                 text = duty,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                fontFamily = AmozeshgamTheme.fonts["regular"],
                 color = AmozeshgamTheme.colors["textColor"]!!
             )
         }
@@ -932,7 +934,7 @@ fun OrdersItem(
             Text(
                 text = orderNumber,
                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"]
             )
             Row(
                 modifier = Modifier
@@ -943,12 +945,12 @@ fun OrdersItem(
             ) {
                 Text(
                     text = orderDate, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":تاریخ شفارش",
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
 
             }
@@ -961,11 +963,11 @@ fun OrdersItem(
             ) {
                 Text(
                     text = orderType, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":نوع سفارش", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -983,13 +985,13 @@ fun OrdersItem(
                     Text(
                         text = "لیست سفارشات",
                         color = Color.White,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 }
                 Text(
                     text = ":دوره های این سفارش",
                     color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -1003,12 +1005,12 @@ fun OrdersItem(
                     Text(
                         text = "${DecimalFormat(",000").format(payment.toInt())}تومان",
                         color = AmozeshgamTheme.colors["textColor"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 }
                 Text(
                     text = ":مبلغ", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -1020,11 +1022,11 @@ fun OrdersItem(
             ) {
                 Text(
                     text = trackNumber, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":شماره پیگیری", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -1049,7 +1051,7 @@ fun OrdersItem(
                                 .padding(5.dp),
                             text = "تکمیل شده",
                             color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                            fontFamily = AmozeshgamTheme.fonts["regular"]
                         )
                     }
                 } else {
@@ -1068,14 +1070,14 @@ fun OrdersItem(
                                 .align(Alignment.Center),
                             text = "ناموفق",
                             color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                            fontFamily = AmozeshgamTheme.fonts["regular"]
                         )
                     }
                 }
 
                 Text(
                     text = ":وضعیت", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
         }
@@ -1111,7 +1113,7 @@ fun TransactionItem(
             Text(
                 text = transactionNumber,
                 color = AmozeshgamTheme.colors["secondaryTextColor"]!!,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                fontFamily = AmozeshgamTheme.fonts["regular"]
             )
             Row(
                 modifier = Modifier
@@ -1122,11 +1124,11 @@ fun TransactionItem(
             ) {
                 Text(
                     text = transactionDate, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":تاریخ شفارش", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
 
             }
@@ -1139,11 +1141,11 @@ fun TransactionItem(
             ) {
                 Text(
                     text = transactionType, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":نوع سفارش", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
 
@@ -1158,12 +1160,12 @@ fun TransactionItem(
                     Text(
                         text = "${DecimalFormat(",000").format(payment.toInt())}تومان",
                         color = AmozeshgamTheme.colors["textColor"]!!,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 }
                 Text(
                     text = ":مبلغ", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily =AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -1175,11 +1177,11 @@ fun TransactionItem(
             ) {
                 Text(
                     text = trackNumber, color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
                 Text(
                     text = ":شماره پیگیری", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
             Row(
@@ -1200,7 +1202,7 @@ fun TransactionItem(
                             .padding(10.dp),
                         text = "تکمیل شده",
                         color = Color.White,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 } else {
                     Text(
@@ -1213,12 +1215,12 @@ fun TransactionItem(
                             .padding(10.dp),
                         text = "ناموفق",
                         color = Color.White,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                        fontFamily = AmozeshgamTheme.fonts["regular"]
                     )
                 }
                 Text(
                     text = "وضعیت", color = AmozeshgamTheme.colors["textColor"]!!,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
         }
@@ -1367,7 +1369,7 @@ fun OptionItem(
         ) {
             Text(
                 text = text,
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                fontFamily = AmozeshgamTheme.fonts["regular"],
                 color = AmozeshgamTheme.colors[if (tag == currentTag) "primary" else "yellowColor"]!!,
             )
             Spacer(modifier = Modifier.width(5.dp))
@@ -1381,7 +1383,7 @@ fun OptionItem(
                     modifier = Modifier.align(Alignment.Center),
                     text = (tag + 1).toString(),
                     color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                    fontFamily = AmozeshgamTheme.fonts["regular"]
                 )
             }
         }

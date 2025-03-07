@@ -70,7 +70,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         errorHandler.handelAnyError {
             viewModelScope.launch {
                 dataBaseInputOutput.saveData {
-                    it[DataStoreKey.enabledNotification] = !(_enabledAmozeshgamNotification.value)!!
+                    it[DataStoreKey.enabledNotification] = !(_enabledAmozeshgamNotification.value)
                 }
             }
         }

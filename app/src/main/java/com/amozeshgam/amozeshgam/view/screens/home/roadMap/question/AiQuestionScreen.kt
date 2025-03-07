@@ -155,7 +155,7 @@ fun ViewAiQuestion(viewModel: QuestionViewModel = hiltViewModel(), navController
                         text = questionData.value!!.questions[currentIndex.intValue].question,
                         textAlign = TextAlign.End,
                         fontSize = 25.sp,
-                        fontFamily = AmozeshgamTheme.fonts["regular"]!!,
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                 }

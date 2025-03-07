@@ -95,7 +95,7 @@ fun ViewInformation(
                         text = "علیرضا احمدی",
                         fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                        fontFamily = AmozeshgamTheme.fonts["regular"],
                         color = AmozeshgamTheme.colors["textColor"]!!
                     )
                     repeat(informationData.value!!.data.role.size) { index ->
@@ -106,7 +106,7 @@ fun ViewInformation(
                                     modifier = Modifier.padding(horizontal = 5.dp),
                                     text = informationData.value!!.data.role[index],
                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                    fontFamily = AmozeshgamTheme.fonts["regular"]
                                 )
                             },
                             itemTwo = {
@@ -165,7 +165,7 @@ fun ViewInformation(
                     .align(Alignment.End)
                     .padding(10.dp),
                 text = "دوره های آموزشی",
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                fontFamily = AmozeshgamTheme.fonts["black"],
                 fontSize = 20.sp,
                 textAlign = TextAlign.Right,
                 color = AmozeshgamTheme.colors["textColor"]!!
@@ -190,7 +190,7 @@ fun ViewInformation(
                     .padding(10.dp)
                     .align(Alignment.End),
                 text = "اعضای تیم",
-                fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                fontFamily = AmozeshgamTheme.fonts["black"],
                 fontSize = 20.sp,
                 textAlign = TextAlign.Right,
                 color = AmozeshgamTheme.colors["textColor"]!!

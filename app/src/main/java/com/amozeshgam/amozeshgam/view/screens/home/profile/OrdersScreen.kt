@@ -85,9 +85,7 @@ fun ViewMyOrders(navController: NavController, viewModel: MyOrdersViewModel = hi
                             )
                             Text(
                                 text = "لیست سفارشات شما خالی است.",
-                                fontFamily = FontFamily(
-                                    Font(R.font.yekan_bakh_regular)
-                                )
+                                fontFamily = AmozeshgamTheme.fonts["regular"]
                             )
                             Button(
                                 modifier = Modifier
@@ -142,7 +140,7 @@ fun ViewMyOrders(navController: NavController, viewModel: MyOrdersViewModel = hi
                                 modifier = Modifier.padding(10.dp),
                                 text = "سفارشات",
                                 color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_bold))
+                                fontFamily = AmozeshgamTheme.fonts["bold"]
                             )
                             LazyColumn {
                                 items(ordersData.value!!.orders[reviewDialogIndex.intValue].roadMaps.size) { index ->

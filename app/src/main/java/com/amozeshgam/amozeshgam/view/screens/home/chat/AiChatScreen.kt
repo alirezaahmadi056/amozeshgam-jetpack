@@ -111,7 +111,7 @@ fun ViewAiChat(navController: NavController, viewModel: ChatViewModel = hiltView
                                     .padding(2.dp),
                                 text = "گفت و گو با هوش مصنوعی آموزشگام",
                                 fontSize = 22.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                                fontFamily = AmozeshgamTheme.fonts["black"],
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
@@ -120,7 +120,7 @@ fun ViewAiChat(navController: NavController, viewModel: ChatViewModel = hiltView
                             Text(
                                 modifier = Modifier.wrapContentSize(),
                                 text = "..پاسخگوی سوالات شما",
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_semibold)),
+                                fontFamily = AmozeshgamTheme.fonts["bold"],
                                 color = AmozeshgamTheme.colors["textColor"]!!
                             )
                         }

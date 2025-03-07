@@ -69,7 +69,13 @@ private val customThemeIdLight =
 private val customThemeIdDark =
     hashMapOf("bgLogin" to backgroundLoginDark, "amozeshgamBanner" to amozeshgamBannerDark)
 private val customThemeFont =
-    hashMapOf("bold" to fontBold, "regular" to fontRegular, "black" to fontBlack)
+    hashMapOf(
+        "bold" to fontBold,
+        "regular" to fontRegular,
+        "black" to fontBlack,
+        "light" to fontLight,
+        "medium" to fontMedium
+    )
 
 @Composable
 fun AmozeshgamTheme(
@@ -85,7 +91,7 @@ fun AmozeshgamTheme(
         else -> customThemeIdLight
     }
     val view = LocalView.current
-    val windowController =  rememberSystemUiController()
+    val windowController = rememberSystemUiController()
     if (!view.isInEditMode) {
         SideEffect {
             windowController.setStatusBarColor(colorScheme["primary"]!!)

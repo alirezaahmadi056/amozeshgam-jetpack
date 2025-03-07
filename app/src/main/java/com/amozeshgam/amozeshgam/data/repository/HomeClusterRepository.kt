@@ -13,6 +13,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestDeleteFavorite
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestDiscount
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestGetCourse
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestId
+import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndHash
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestIdAndUserId
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestRegister
 import com.amozeshgam.amozeshgam.data.model.remote.ApiRequestReportBug
@@ -51,6 +52,7 @@ import com.amozeshgam.amozeshgam.data.model.remote.ApiResponsePayment
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseRoadMapQuestion
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleField
 import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseSingleSubField
+import com.amozeshgam.amozeshgam.data.model.remote.ApiResponseUserPrivateData
 import com.amozeshgam.amozeshgam.di.qualifier.DaneshjooyarApi
 import com.amozeshgam.amozeshgam.handler.ErrorHandler
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -78,6 +80,11 @@ class HomeClusterRepository @Inject constructor() {
 
     suspend fun getPodcastsData(): ApiResponseAllPodcasts? {
         val (response, _) = errorHandler.handelRequestApiValue(api.apiGetAllPodcasts())
+        return response
+    }
+
+    suspend fun getUserPrivateData(body: ApiRequestIdAndHash): ApiResponseUserPrivateData? {
+        val (response, _) = errorHandler.handelRequestApiValue(api.apiGetUserPrivateData(body = body))
         return response
     }
 
@@ -272,7 +279,7 @@ class HomeClusterRepository @Inject constructor() {
         val (_, code) = errorHandler.handelRequestApiValue(
             api.apiUploadAvatar(
                 id = MultipartBody.Part.createFormData("id", id.toString()),
-                hash = MultipartBody.Part.createFormData("hash_login", hash),
+                hash_login = MultipartBody.Part.createFormData("hash_login", hash),
                 avatar = MultipartBody.Part.createFormData(
                     "avatar",
                     avatar!!.name,

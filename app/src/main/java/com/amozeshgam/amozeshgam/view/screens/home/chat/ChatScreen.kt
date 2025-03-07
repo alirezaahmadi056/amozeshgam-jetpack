@@ -127,7 +127,7 @@ fun ViewChat(
                             Text(
                                 text = "گفت و گو با مشاورین آموزشگام",
                                 fontSize = 25.sp,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_black)),
+                                fontFamily = AmozeshgamTheme.fonts["black"],
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 color = AmozeshgamTheme.colors["textColor"]!!
@@ -135,7 +135,7 @@ fun ViewChat(
                             Text(
                                 modifier = Modifier.wrapContentSize(),
                                 text = "..پاسخگوی سوالات شما",
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_semibold)),
+                                fontFamily = AmozeshgamTheme.fonts["bold"],
                                 color = AmozeshgamTheme.colors["textColor"]!!
                             )
                         }

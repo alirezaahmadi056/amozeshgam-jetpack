@@ -118,14 +118,14 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                                 Text(
                                                     text = supportList.value!!.tickets[index].priority,
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
 
                                                 Text(
                                                     text = "اولویت",
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
 
@@ -141,13 +141,13 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                                 Text(
                                                     text = supportList.value!!.tickets[index].status,
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
                                                 Text(
                                                     text = "وضعیت",
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
                                             }
@@ -161,13 +161,13 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                                 Text(
                                                     text = supportList.value!!.tickets[index].createdAt,
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
                                                 Text(
                                                     text = "تاریخ ثبت",
                                                     color = AmozeshgamTheme.colors["textColor"]!!,
-                                                    fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                    fontFamily = AmozeshgamTheme.fonts["regular"],
                                                     fontSize = 15.sp
                                                 )
                                             }
@@ -198,14 +198,14 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                                             modifier = Modifier.padding(5.dp),
                                                             text = "مشاهده",
                                                             color = Color.White,
-                                                            fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                            fontFamily = AmozeshgamTheme.fonts["regular"],
                                                             fontSize = 15.sp
                                                         )
                                                     }
                                                     Text(
                                                         text = "عملیات",
                                                         color = AmozeshgamTheme.colors["textColor"]!!,
-                                                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                                        fontFamily = AmozeshgamTheme.fonts["regular"],
                                                         fontSize = 15.sp
                                                     )
                                                 }
@@ -242,7 +242,7 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                 ) {
                                     Text(
                                         text = "درخواست جدید",
-                                        fontFamily = FontFamily(Font(R.font.yekan_bakh_regular)),
+                                        fontFamily =AmozeshgamTheme.fonts["regular"],
                                         color = Color.White
                                     )
                                     Icon(
@@ -270,7 +270,7 @@ fun ViewSupport(navController: NavController, viewModel: SupportViewModel = hilt
                                 textAlign = TextAlign.Center,
                                 text = ".شما تا کنون درخواستی برای پشتیبانی ثبت نکرده اید",
                                 color = AmozeshgamTheme.colors["textColor"]!!,
-                                fontFamily = FontFamily(Font(R.font.yekan_bakh_regular))
+                                fontFamily =AmozeshgamTheme.fonts["regular"]
                             )
                             Spacer(modifier = Modifier.height(25.dp))
                             Button(

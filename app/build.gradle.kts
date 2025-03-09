@@ -87,6 +87,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.media3:media3-session:1.5.1")
     implementation(libs.androidx.media3.datasource.okhttp)
     implementation(libs.rasp.android)
     implementation(libs.accompanist.systemuicontroller)

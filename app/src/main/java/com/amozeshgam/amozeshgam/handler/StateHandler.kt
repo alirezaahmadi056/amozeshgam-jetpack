@@ -15,15 +15,11 @@ enum class ValidatingStateHandler {
     WAITING
 }
 
-enum class BatteryStateHandler {
-    HIGH_LEVEL,
-    MID_LEVEL,
-    LOW_LEVEL
-}
+
 
 enum class NotificationPlayerState {
-    PLAY,
-    PAUSE
+    PLAY_AND_PAUSE,
+    DESTROY
 }
 enum class NavDrawerMode {
     NORMAL,
@@ -37,16 +33,11 @@ enum class DownloadServiceState {
     CANCEL
 }
 
-enum class AppWidgetState {
-    STARTAPP,
-    OPEN_COURSE_SCREEN,
-    OPEN_ROADMAP_SCREEN
-}
+
 
 enum class ScreenName{
     LOGIN,
     HOME,
-    SPLASH,
     TOUR
 }
 

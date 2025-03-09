@@ -91,9 +91,9 @@ class PodcastPlayerViewModel @Inject constructor(@ApplicationContext private val
     }
 
 
-    fun loadData(uri: String, title: String) {
+    fun loadData(uri: String, title: String,owner:String) {
         viewModelScope.launch {
-            _readyForPlay.value = binder?.loadUri(uri, title) ?: false
+            _readyForPlay.value = binder?.loadUri(uri, title,owner) ?: false
         }
     }
 

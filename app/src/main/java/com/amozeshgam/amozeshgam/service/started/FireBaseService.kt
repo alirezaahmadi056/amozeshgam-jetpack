@@ -20,7 +20,6 @@ class FireBaseService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.i("jjj", "onMessageReceived: ${message.data.size}")
         message.notification?.let {
             showNotification(
                 title = message.notification?.title.toString(),

@@ -136,7 +136,8 @@ fun ViewPodcastPlayer(
             viewModel.startPodcastService()
             viewModel.loadData(
                 podcastData.value?.voice.toString(),
-                podcastData.value?.title.toString()
+                podcastData.value?.title.toString(),
+                podcastData.value?.speaker.toString()
             )
             title.value = podcastData.value?.title.toString()
             speech.value = podcastData.value?.speaker.toString()
@@ -397,7 +398,8 @@ fun ViewPodcastPlayer(
                                     CoroutineScope(Dispatchers.Main).launch {
                                         viewModel.loadData(
                                             podcastData.value?.voice.toString(),
-                                            podcastData.value?.title.toString()
+                                            podcastData.value?.title.toString(),
+                                            podcastData.value?.speaker.toString()
                                         )
                                         errorLoading.value = false
                                         showErrorDialog.value = podcastData.value == null

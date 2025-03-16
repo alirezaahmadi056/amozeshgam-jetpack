@@ -147,8 +147,6 @@ fun ViewAiQuestion(viewModel: QuestionViewModel = hiltViewModel(), navController
                             painter = painterResource(R.drawable.bg_question),
                             contentScale = ContentScale.FillBounds
                         )
-
-
                 ) {
                     Text(
                         modifier = Modifier.align(Alignment.Center),

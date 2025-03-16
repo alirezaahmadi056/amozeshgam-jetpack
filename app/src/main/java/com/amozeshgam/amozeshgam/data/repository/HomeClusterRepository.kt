@@ -260,11 +260,6 @@ class HomeClusterRepository @Inject constructor() {
         return ApiResponseTypeFace(response, code)
     }
 
-    suspend fun getAiQuestion(): ApiResponseTypeFace<ApiResponseAiQuestion> {
-        val (response, code) = errorHandler.handelRequestApiValue(api.apiGetAiQuestion())
-        return ApiResponseTypeFace(response, code)
-    }
-
     suspend fun sendAiAnswer(body: ApiRequestArrayString): ApiResponseTypeFace<ApiResponseAiPlanningQuestion> {
         val (response, code) = errorHandler.handelRequestApiValue(api.apiAnswersAiPlanning(body = body))
         return ApiResponseTypeFace(response, code)

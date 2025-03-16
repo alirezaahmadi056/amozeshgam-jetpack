@@ -49,33 +49,34 @@ class HomeActivityModel @Inject constructor() {
         ),
 
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = NavigationScreenHandler.MyPackageScreen.route,
             title = "دوره های من",
             icon = R.drawable.ic_book
         ),
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = NavigationScreenHandler.SupportScreen.route,
             title = "پشتیبانی",
             icon = R.drawable.ic_support
         ),
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = NavigationScreenHandler.InformationScreen.route,
             title = "درباره ما",
             icon = R.drawable.ic_about
         ),
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = "amozeshgam.com",
             title = "تماس با ما",
-            icon = R.drawable.ic_contacts
+            icon = R.drawable.ic_contacts,
+            mode = NavDrawerMode.LINK
         ),
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = "amozeshgam.com",
             title = "اشتراک گذاری برنامه",
             icon = R.drawable.ic_share,
             mode = NavDrawerMode.LINK
         ),
         NavDrawerItem(
-            route = NavigationScreenHandler.MyRoadMapScreen.route,
+            route = "amozeshgam.com",
             title = "امتیاز به برنامه",
             icon = R.drawable.ic_star,
             mode = NavDrawerMode.LINK
@@ -83,7 +84,7 @@ class HomeActivityModel @Inject constructor() {
         NavDrawerItem(
             route = NavigationScreenHandler.MyRoadMapScreen.route,
             title = "حالت تیره",
-            icon = R.drawable.ic_simple_road_map,
+            icon = R.drawable.ic_dark,
             state = mutableStateOf(GlobalUiModel.uiTheme.intValue == GlobalUiModel.DARK_CODE),
             mode = NavDrawerMode.SWITCH
         ),

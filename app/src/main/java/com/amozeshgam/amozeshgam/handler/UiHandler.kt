@@ -1213,6 +1213,7 @@ object UiHandler {
                             ) {
                                 AnythingRow(itemTwo = {
                                     Text(
+                                        modifier = Modifier.padding(horizontal = 5.dp),
                                         text = drawerNavItems[index].title,
                                         color = AmozeshgamTheme.colors["textColor"]!!,
                                         fontFamily = AmozeshgamTheme.fonts["regular"]
@@ -1279,6 +1280,7 @@ object UiHandler {
                         ) {
                             AnythingRow(itemTwo = {
                                 Text(
+                                    modifier=Modifier.padding(horizontal = 5.dp),
                                     text = "خروج از حساب",
                                     color = Color.Red,
                                     fontFamily = AmozeshgamTheme.fonts["regular"]
